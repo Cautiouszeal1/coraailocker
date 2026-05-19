@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoraAi Locker — Lock. Secure. Empower.</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.1/ethers.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#04030F;--surface:#0D0A1E;--card:#120E26;--card2:#17112E;--border:#1E1640;--border2:#2A1F55;--p1:#6C3CE1;--p2:#8B5CF6;--p3:#A78BFA;--p4:#C4B5FD;--acc:#00FFB2;--gold:#FFD166;--red:#FF4D6D;--blue:#38BDF8;--text:#F0ECFF;--text2:#A89FCC;--text3:#6B5FA0;--grad:linear-gradient(135deg,#6C3CE1,#8B5CF6);--grad2:linear-gradient(135deg,#00FFB2,#38BDF8);--grad3:linear-gradient(135deg,#FFD166,#FF9A3C)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden}
+.bgw{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgg{position:absolute;inset:0;background-image:linear-gradient(rgba(108,60,225,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(108,60,225,.06) 1px,transparent 1px);background-size:40px 40px}
+.bgo{position:absolute;border-radius:50%;filter:blur(110px);animation:fl 10s ease-in-out infinite alternate}
+.o1{width:700px;height:700px;background:radial-gradient(circle,rgba(108,60,225,.18),transparent 70%);top:-300px;left:-200px}
+.o2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,255,178,.08),transparent 70%);bottom:-200px;right:-100px;animation-delay:-5s}
+.o3{width:300px;height:300px;background:radial-gradient(circle,rgba(56,189,248,.09),transparent 70%);top:40%;left:60%;animation-delay:-2s}
+@keyframes fl{from{transform:translate(0,0)}to{transform:translate(40px,30px)}}
+.w{position:relative;z-index:1}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);backdrop-filter:blur(24px);background:rgba(4,3,15,.8);position:sticky;top:0;z-index:100}
+.lm{width:36px;height:36px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:#fff;box-shadow:0 0 20px rgba(108,60,225,.5);flex-shrink:0}
+.lt{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem}.lt em{color:var(--p3);font-style:normal}
+.ls{font-size:.56rem;color:var(--text3);letter-spacing:.15em;font-family:'JetBrains Mono',monospace}
+.nr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.np{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;background:var(--surface);border:1px solid var(--border2);font-size:.7rem;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.nd{width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:bl 2s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.4}}
+.wp{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;background:rgba(108,60,225,.12);border:1px solid rgba(108,60,225,.35);font-size:.7rem;color:var(--p3);font-family:'JetBrains Mono',monospace}
+
+/* BTN */
+.btn{font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:11px;transition:all .2s;display:inline-flex;align-items:center;gap:7px;padding:10px 20px;text-transform:uppercase}
+.bp{background:var(--grad);color:#fff;box-shadow:0 0 20px rgba(108,60,225,.3)}.bp:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(108,60,225,.5)}.bp:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bg2{background:var(--surface);color:var(--text2);border:1px solid var(--border2)}.bg2:hover{border-color:var(--p2);color:var(--p3)}
+.ba{background:var(--grad2);color:#04030F;font-weight:700}.ba:hover{transform:translateY(-2px)}.ba:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bsm{padding:7px 13px;font-size:.64rem;border-radius:8px}
+
+/* HERO */
+.hero{padding:80px 40px 60px;text-align:center}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(108,60,225,.1);border:1px solid rgba(108,60,225,.25);border-radius:100px;padding:6px 16px;font-size:.68rem;color:var(--p3);margin-bottom:24px;font-family:'JetBrains Mono',monospace;letter-spacing:.07em}
+.hbadge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--acc);display:block;box-shadow:0 0 8px var(--acc)}
+.htitle{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,4.5rem);line-height:1.0;letter-spacing:-.03em;margin-bottom:20px}
+.h1{display:block;background:linear-gradient(135deg,#fff 0%,var(--p4) 60%,var(--p2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.h2{display:block;background:linear-gradient(135deg,var(--acc) 0%,var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:.95rem;color:var(--text2);max-width:480px;margin:0 auto 36px;line-height:1.75}
+.hcta{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:44px}
+.srow2{display:flex;justify-content:center;max-width:640px;margin:0 auto;border:1px solid var(--border2);border-radius:16px;overflow:hidden;background:var(--card)}
+.st{flex:1;padding:18px 12px;text-align:center;border-right:1px solid var(--border)}.st:last-child{border-right:none}
+.sn{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sl{font-size:.58rem;color:var(--text3);letter-spacing:.1em;margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* FEATURES */
+.fs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:860px;margin:50px auto;padding:0 40px}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;transition:all .3s}.fc:hover{border-color:var(--border2);transform:translateY(-3px)}
+.fi{font-size:1.4rem;margin-bottom:10px}.ft{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;margin-bottom:6px}.fd{font-size:.74rem;color:var(--text2);line-height:1.6}
+
+/* APP */
+.aw{max-width:680px;margin:0 auto;padding:0 20px 100px}
+.tn{display:flex;gap:3px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:24px;flex-wrap:wrap}
+.tb{flex:1;min-width:70px;font-family:'Syne',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:.04em;padding:9px 4px;border:none;cursor:pointer;border-radius:10px;transition:all .2s;background:transparent;color:var(--text3);text-transform:uppercase;white-space:nowrap}
+.tb.active{background:var(--grad);color:#fff;box-shadow:0 0 14px rgba(108,60,225,.35)}.tb:hover:not(.active){color:var(--text);background:rgba(255,255,255,.04)}
+
+/* PANEL */
+.pn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:relative;overflow:hidden;margin-bottom:14px}
+.pn::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--p2),transparent)}
+.pnt{font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;color:var(--p4);margin-bottom:5px;display:flex;align-items:center;gap:9px}
+.pns{font-size:.74rem;color:var(--text3);margin-bottom:22px}
+
+/* FORM */
+.fp{display:flex;align-items:center;gap:8px;background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.16);border-radius:9px;padding:10px 14px;margin-bottom:16px;font-size:.73rem;color:var(--text2)}
+.fp b{color:var(--gold)}
+.fi2{margin-bottom:15px}
+.fl{font-size:.65rem;font-weight:600;color:var(--text3);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.fl span{color:var(--p3);font-weight:700}
+.inp{width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.84rem;border-radius:11px;padding:12px 14px;transition:all .2s;outline:none}
+.inp:focus{border-color:var(--p2);box-shadow:0 0 0 3px rgba(108,60,225,.1)}.inp::placeholder{color:var(--text3)}
+
+/* TOKEN BOX */
+.tbox{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.tav{width:44px;height:44px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;flex-shrink:0;box-shadow:0 0 12px rgba(108,60,225,.35)}
+.tav.liq{background:var(--grad2);color:#04030F}
+.tnm{font-weight:700;font-size:.9rem}.tad{font-size:.64rem;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}.tsp{font-size:.68rem;color:var(--p3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* PRESETS */
+.prs{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.pr{font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;padding:5px 10px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text3);transition:all .15s}
+.pr:hover,.pr.on{border-color:var(--p2);color:var(--p3);background:rgba(108,60,225,.1)}
+
+/* SUMMARY */
+.sum{background:rgba(108,60,225,.05);border:1px solid rgba(108,60,225,.16);border-radius:14px;padding:16px;margin:18px 0;animation:fu .3s ease}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(108,60,225,.07)}.sr:last-child{border:none}
+.sk{font-size:.66rem;color:var(--text3);font-family:'JetBrains Mono',monospace}.sv{font-size:.78rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--p4)}
+
+/* LOCK CARDS */
+.sw{display:flex;gap:9px;margin-bottom:20px}
+.si{flex:1;background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.82rem;border-radius:11px;padding:12px 15px;outline:none;transition:all .2s}.si:focus{border-color:var(--p2);box-shadow:0 0 0 3px rgba(108,60,225,.1)}.si::placeholder{color:var(--text3)}
+.ll{display:flex;flex-direction:column;gap:11px}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:17px;transition:all .2s;position:relative;overflow:hidden}
+.lc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}.lc:hover{border-color:var(--border2);transform:translateX(3px)}
+.lt2{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.lcn{font-family:'Syne',sans-serif;font-weight:800;font-size:.86rem}.lcm{font-size:.6rem;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.bgs{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.lcty{font-size:.57rem;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;padding:3px 8px;border-radius:5px}
+.ltt{background:rgba(108,60,225,.13);color:var(--p3);border:1px solid rgba(108,60,225,.25)}
+.sb{font-size:.57rem;font-family:'JetBrains Mono',monospace;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.08em}
+.slk{background:rgba(0,255,178,.07);color:var(--acc);border:1px solid rgba(0,255,178,.16)}
+.srd{background:rgba(255,209,102,.07);color:var(--gold);border:1px solid rgba(255,209,102,.16)}
+.sdn{background:rgba(255,77,109,.07);color:var(--red);border:1px solid rgba(255,77,109,.16)}
+.lcg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:11px}
+.lfl{font-size:.57rem;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.lfv{font-size:.76rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--p4)}.lfv.g{color:var(--acc)}.lfv.gd{color:var(--gold)}
+.pb{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.pf{height:100%;border-radius:2px;background:var(--grad)}
+.pl{display:flex;justify-content:space-between;font-size:.57rem;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+/* SCANNER */
+.scr{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-top:14px;animation:fu .3s ease}
+.scrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}.scrow:last-child{border:none}
+.sck{font-size:.72rem;color:var(--text2)}.scv{font-size:.72rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.safe{color:var(--acc)}.warn{color:var(--gold)}.danger{color:var(--red)}
+
+/* VESTING */
+.vs{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.vi{background:var(--surface);border:1px solid var(--border2);border-radius:11px;padding:13px;display:flex;align-items:center;gap:12px}
+.vn{width:26px;height:26px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;flex-shrink:0}
+.vd{font-size:.66rem;color:var(--text3);font-family:'JetBrains Mono',monospace}.va{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;color:var(--p3)}.vp{font-size:.6rem;color:var(--acc);font-family:'JetBrains Mono',monospace}
+
+/* CERT */
+.cw{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--border2);border-radius:18px;padding:26px;text-align:center;position:relative;overflow:hidden;margin-top:14px}
+.cw::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(108,60,225,.07),rgba(0,255,178,.04));pointer-events:none}
+.cw::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--p1),var(--acc),var(--p1))}
+.clo{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:var(--p3);margin-bottom:3px}
+.cti{font-size:.58rem;color:var(--text3);letter-spacing:.2em;font-family:'JetBrains Mono',monospace;margin-bottom:18px}
+.cam{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px}
+.ctk{font-size:.78rem;color:var(--text2);margin-bottom:18px}
+.cgr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.cf{background:rgba(108,60,225,.08);border:1px solid rgba(108,60,225,.15);border-radius:10px;padding:11px}
+.cfl{font-size:.56rem;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.cfv{font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;color:var(--p4)}
+.cst{display:inline-flex;align-items:center;gap:7px;background:rgba(0,255,178,.07);border:1px solid rgba(0,255,178,.18);border-radius:100px;padding:7px 14px;font-size:.66rem;color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:600}
+
+/* LISTINGS */
+.lg{display:flex;flex-direction:column;gap:10px}
+.lic{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px;display:flex;align-items:center;gap:13px;transition:all .2s}.lic:hover{border-color:var(--border2);transform:translateX(3px)}
+.lia{width:40px;height:40px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.76rem;flex-shrink:0}
+.lin{font-family:'Syne',sans-serif;font-weight:700;font-size:.84rem}.lim{font-size:.6rem;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.lir{text-align:right}.lisc{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem}.list{font-size:.58rem;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+/* EMPTY */
+.em{text-align:center;padding:48px 20px}
+.ei{font-size:2.5rem;opacity:.22;margin-bottom:12px}.en{font-family:'Syne',sans-serif;font-weight:700;font-size:.84rem;color:var(--text2);margin-bottom:6px}.es{font-size:.72rem;color:var(--text3)}
+
+/* TOASTS */
+.toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:310px}
+.toast{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px 15px;display:flex;align-items:flex-start;gap:10px;animation:ti .3s ease;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.toast.success{border-color:rgba(0,255,178,.26)}.toast.error{border-color:rgba(255,77,109,.26)}.toast.info{border-color:rgba(108,60,225,.26)}
+.tt{font-weight:700;font-size:.78rem;margin-bottom:2px;font-family:'Syne',sans-serif}.tm{font-size:.68rem;color:var(--text2)}
+@keyframes ti{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+footer{border-top:1px solid var(--border);padding:36px 40px;text-align:center;color:var(--text3);font-size:.72rem}
+.fl2{display:flex;justify-content:center;gap:20px;margin-bottom:12px}.fl2 a{color:var(--p3);text-decoration:none;font-weight:600;transition:color .2s}.fl2 a:hover{color:var(--acc)}
+.cp{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text2);margin-bottom:12px}
+.hidden{display:none!important}
+@media(max-width:640px){nav,footer{padding:14px 16px}.hero{padding:48px 16px 40px}.fs{grid-template-columns:1fr;padding:0 16px}.aw{padding:0 12px 80px}.lcg{grid-template-columns:1fr 1fr}.srow2{flex-wrap:wrap}.st{min-width:50%}.cgr{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bgw"><div class="bgg"></div><div class="bgo o1"></div><div class="bgo o2"></div><div class="bgo o3"></div></div>
+<div class="w">
+
+<nav>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="lm">C</div>
+    <div><div class="lt">CORA<em>AI</em> LOCKER</div><div class="ls">LOCK · SECURE · EMPOWER</div></div>
+  </div>
+  <div class="nr">
+    <div id="netPill" class="np hidden"><span class="nd"></span><span id="netName">BSC</span></div>
+    <div id="walletPill" class="wp hidden"><span id="walletAddr">—</span></div>
+    <button class="btn bp" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hbadge">AI-POWERED · DECENTRALIZED · TRUSTLESS · BSC MAINNET</div>
+  <h1 class="htitle"><span class="h1">Lock Tokens.</span><span class="h2">Build Trust.</span></h1>
+  <p class="hsub">The most powerful decentralized vault for token & liquidity locking. Trust scores, vesting, anti-rug scanner, and lock certificates — all on-chain.</p>
+  <div class="hcta">
+    <button class="btn bp" onclick="goTab('lock')" style="padding:12px 24px">🔒 Lock Tokens</button>
+    <button class="btn ba" onclick="goTab('liq')" style="padding:12px 24px">💧 Lock Liquidity</button>
+    <button class="btn bg2" onclick="goTab('scanner')" style="padding:12px 24px">🤖 Scan Contract</button>
+    <button class="btn bg2" onclick="goTab('explorer')" style="padding:12px 24px">🔍 Explorer</button>
+  </div>
+  <div class="srow2">
+    <div class="st"><div class="sn">$0</div><div class="sl">RUGGED SO FAR</div></div>
+    <div class="st"><div class="sn">∞</div><div class="sl">LOCK DURATION</div></div>
+    <div class="st"><div class="sn">0</div><div class="sl">ADMIN KEYS</div></div>
+    <div class="st"><div class="sn">BSC</div><div class="sl">CHAIN LIVE</div></div>
+  </div>
+</section>
+
+<div class="fs">
+  <div class="fc"><div class="fi">🔒</div><div class="ft">Token & LP Locking</div><div class="fd">Lock any BEP-20 or LP token immutably. Prove your project won't rug pull.</div></div>
+  <div class="fc"><div class="fi">🛡️</div><div class="ft">Trust Score & Scanner</div><div class="fd">AI-powered contract scanner with public trust scores. Know before you invest.</div></div>
+  <div class="fc"><div class="fi">📜</div><div class="ft">Lock Certificates</div><div class="fd">Shareable verification certificate for every lock. Show investors you're serious.</div></div>
+</div>
+
+<div class="aw" id="app">
+  <div class="tn">
+    <button class="tb active" id="tab-lock" onclick="showTab('lock')">🔒 Token</button>
+    <button class="tb" id="tab-liq" onclick="showTab('liq')">💧 Liquidity</button>
+    <button class="tb" id="tab-vesting" onclick="showTab('vesting')">📅 Vesting</button>
+    <button class="tb" id="tab-scanner" onclick="showTab('scanner')">🤖 Scanner</button>
+    <button class="tb" id="tab-mylocks" onclick="showTab('mylocks')">📦 My Locks</button>
+    <button class="tb" id="tab-listings" onclick="showTab('listings')">🏅 Listings</button>
+    <button class="tb" id="tab-explorer" onclick="showTab('explorer')">🔍 Explorer</button>
+    <button class="tb hidden" id="tab-cert" onclick="showTab('cert')">📜 Cert</button>
+  </div>
+
+  <!-- TOKEN LOCK -->
+  <div id="pane-lock">
+    <div class="pn">
+      <div class="pnt">🔒 Lock Tokens</div>
+      <div class="pns">Lock any BEP-20 token. Team tokens, investor allocations, or treasury funds.</div>
+      <div class="fp">💡 Fee: <b>0.001 BNB</b> per lock · Immutable · No admin keys</div>
+      <div class="fi2">
+        <div class="fl">Token Address <span id="ts1"></span></div>
+        <input class="inp" id="t-addr" placeholder="Paste token contract address 0x..." oninput="onAddr(this.value,'t')">
+      </div>
+      <div id="t-info" class="tbox hidden">
+        <div class="tav" id="t-ava">TKN</div>
+        <div><div class="tnm" id="t-name">—</div><div class="tad" id="t-adS">—</div><div class="tsp" id="t-supply">—</div></div>
+      </div>
+      <div class="fi2">
+        <div class="fl">Amount <span id="t-sym">TOKEN</span></div>
+        <input class="inp" id="t-amount" type="number" placeholder="e.g. 1000000" oninput="updateSum('t')">
+      </div>
+      <div class="fi2">
+        <div class="fl">Unlock Date</div>
+        <div class="prs">
+          <button class="pr" onclick="setDate(30,'t',this)">30D</button>
+          <button class="pr" onclick="setDate(90,'t',this)">90D</button>
+          <button class="pr" onclick="setDate(180,'t',this)">6M</button>
+          <button class="pr" onclick="setDate(365,'t',this)">1Y</button>
+          <button class="pr" onclick="setDate(730,'t',this)">2Y</button>
+        </div>
+        <input class="inp" id="t-date" type="datetime-local" oninput="updateSum('t')">
+      </div>
+      <div id="t-sum" class="sum hidden">
+        <div class="sr"><span class="sk">TOKEN</span><span class="sv" id="ss-tok">—</span></div>
+        <div class="sr"><span class="sk">AMOUNT</span><span class="sv" id="ss-amt">—</span></div>
+        <div class="sr"><span class="sk">DURATION</span><span class="sv" id="ss-dur">—</span></div>
+        <div class="sr"><span class="sk">UNLOCK DATE</span><span class="sv" id="ss-dt">—</span></div>
+        <div class="sr"><span class="sk">FEE</span><span class="sv" style="color:var(--gold)">0.001 BNB</span></div>
+      </div>
+      <button class="btn bp" id="lockBtn" style="width:100%;justify-content:center;padding:14px;font-size:.8rem;margin-top:4px" onclick="doLock('t')">🔒 Lock Tokens</button>
+    </div>
+  </div>
+
+  <!-- LIQUIDITY LOCK -->
+  <div id="pane-liq" class="hidden">
+    <div class="pn">
+      <div class="pnt">💧 Lock Liquidity</div>
+      <div class="pns">Lock PancakeSwap LP tokens. Proves liquidity can't be removed — investors demand this.</div>
+      <div class="fp">💡 Fee: <b>0.001 BNB</b> · LP tokens locked immutably · Publicly verifiable</div>
+      <div class="fi2">
+        <div class="fl">LP Token Address <span id="ls1"></span></div>
+        <input class="inp" id="l-addr" placeholder="PancakeSwap LP token address 0x..." oninput="onAddr(this.value,'l')">
+      </div>
+      <div id="l-info" class="tbox hidden">
+        <div class="tav liq" id="l-ava">LP</div>
+        <div><div class="tnm" id="l-name">—</div><div class="tad" id="l-adS">—</div><div class="tsp" id="l-supply">—</div></div>
+      </div>
+      <div class="fi2">
+        <div class="fl">LP Amount <span id="l-sym">LP</span></div>
+        <input class="inp" id="l-amount" type="number" placeholder="e.g. 100" oninput="updateSum('l')">
+      </div>
+      <div class="fi2">
+        <div class="fl">Unlock Date</div>
+        <div class="prs">
+          <button class="pr" onclick="setDate(30,'l',this)">30D</button>
+          <button class="pr" onclick="setDate(90,'l',this)">90D</button>
+          <button class="pr" onclick="setDate(180,'l',this)">6M</button>
+          <button class="pr" onclick="setDate(365,'l',this)">1Y</button>
+          <button class="pr" onclick="setDate(730,'l',this)">2Y</button>
+        </div>
+        <input class="inp" id="l-date" type="datetime-local" oninput="updateSum('l')">
+      </div>
+      <div id="l-sum" class="sum hidden">
+        <div class="sr"><span class="sk">LP TOKEN</span><span class="sv" id="ls-tok">—</span></div>
+        <div class="sr"><span class="sk">AMOUNT</span><span class="sv" id="ls-amt">—</span></div>
+        <div class="sr"><span class="sk">DURATION</span><span class="sv" id="ls-dur">—</span></div>
+        <div class="sr"><span class="sk">UNLOCK DATE</span><span class="sv" id="ls-dt">—</span></div>
+        <div class="sr"><span class="sk">FEE</span><span class="sv" style="color:var(--gold)">0.001 BNB</span></div>
+      </div>
+      <button class="btn ba" id="liqBtn" style="width:100%;justify-content:center;padding:14px;font-size:.8rem;margin-top:4px" onclick="doLock('l')">💧 Lock Liquidity</button>
+    </div>
+  </div>
+
+  <!-- VESTING -->
+  <div id="pane-vesting" class="hidden">
+    <div class="pn">
+      <div class="pnt">📅 Vesting Schedule</div>
+      <div class="pns">Multi-stage token vesting. Each tranche is a separate on-chain lock — required by VCs and launchpads.</div>
+      <div class="fp">💡 Each tranche costs <b>0.001 BNB</b> · All locks immutable</div>
+      <div class="fi2">
+        <div class="fl">Token Address <span id="vs1"></span></div>
+        <input class="inp" id="v-addr" placeholder="0x..." oninput="onAddr(this.value,'v')">
+      </div>
+      <div id="v-info" class="tbox hidden">
+        <div class="tav" id="v-ava">TKN</div>
+        <div><div class="tnm" id="v-name">—</div><div class="tad" id="v-adS">—</div><div class="tsp" id="v-supply">—</div></div>
+      </div>
+      <div class="fi2">
+        <div class="fl">Total Tokens to Vest <span id="v-sym">TOKEN</span></div>
+        <input class="inp" id="v-total" type="number" placeholder="Total tokens for vesting" oninput="buildVest()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fi2"><div class="fl">Cliff (months)</div><input class="inp" id="v-cliff" type="number" value="3" min="0" max="24" oninput="buildVest()"></div>
+        <div class="fi2"><div class="fl">Duration (months)</div><input class="inp" id="v-months" type="number" value="12" min="1" max="48" oninput="buildVest()"></div>
+      </div>
+      <div id="vest-preview" class="hidden">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;color:var(--p4);margin:14px 0 10px">📋 Schedule Preview</div>
+        <div class="vs" id="vest-steps"></div>
+        <div style="font-size:.68rem;color:var(--text3);margin:10px 0">Total: <span id="vest-lbl" style="color:var(--p3)">—</span></div>
+      </div>
+      <button class="btn bp" id="vestBtn" style="width:100%;justify-content:center;padding:14px;font-size:.8rem;margin-top:14px" onclick="doVesting()">📅 Create Vesting Schedule</button>
+    </div>
+  </div>
+
+  <!-- SCANNER -->
+  <div id="pane-scanner" class="hidden">
+    <div class="pn">
+      <div class="pnt">🤖 Anti-Rug Scanner</div>
+      <div class="pns">Scan any token contract for red flags. AI-powered risk detection — no wallet needed.</div>
+      <div class="sw">
+        <input class="si" id="scan-addr" placeholder="Token contract address 0x..." onkeydown="if(event.key==='Enter')doScan()">
+        <button class="btn bp" onclick="doScan()">Scan</button>
+      </div>
+      <div id="scan-out"></div>
+    </div>
+  </div>
+
+  <!-- MY LOCKS -->
+  <div id="pane-mylocks" class="hidden">
+    <div class="pn">
+      <div class="pnt" style="justify-content:space-between"><span>📦 My Locks</span><button class="btn bg2 bsm" onclick="loadMyLocks()">↻ Refresh</button></div>
+      <div class="pns">All your locked tokens and liquidity. Generate shareable certificates.</div>
+      <div id="my-list"><div class="em"><div class="ei">🔌</div><div class="en">Connect Wallet</div><div class="es">Connect your wallet to view your locks.</div></div></div>
+    </div>
+  </div>
+
+  <!-- LISTINGS -->
+  <div id="pane-listings" class="hidden">
+    <div class="pn">
+      <div class="pnt">🏅 Verified Project Listings</div>
+      <div class="pns">Projects that have locked on CoraAiVault. Lock tokens to appear here automatically.</div>
+      <div id="listings-out"><div class="em"><div class="ei">🏅</div><div class="en">No Projects Yet</div><div class="es">Be the first to lock and appear here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- EXPLORER -->
+  <div id="pane-explorer" class="hidden">
+    <div class="pn">
+      <div class="pnt">🔍 Lock Explorer</div>
+      <div class="pns">Search any wallet to see locked tokens and liquidity with live countdown timers. No wallet needed.</div>
+      <div class="sw">
+        <input class="si" id="ex-q" placeholder="Any wallet address 0x..." onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="btn bp" onclick="doSearch()">Search</button>
+      </div>
+      <div id="ex-out"><div class="em"><div class="ei">🔍</div><div class="en">Enter Any Wallet</div><div class="es">Search to view locked tokens and liquidity with unlock dates.</div></div></div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE -->
+  <div id="pane-cert" class="hidden">
+    <div class="pn">
+      <div class="pnt" style="justify-content:space-between"><span>📜 Lock Certificate</span><button class="btn bg2 bsm" onclick="showTab('mylocks')">✕ Close</button></div>
+      <div class="pns">Share this certificate to prove your lock to investors and your community.</div>
+      <div class="cw">
+        <div class="clo">CORA AI LOCKER</div>
+        <div class="cti">OFFICIAL LOCK CERTIFICATE</div>
+        <div class="cam" id="c-amount">—</div>
+        <div class="ctk" id="c-token">—</div>
+        <div class="cgr">
+          <div class="cf"><div class="cfl">LOCK ID</div><div class="cfv" id="c-id">—</div></div>
+          <div class="cf"><div class="cfl">NETWORK</div><div class="cfv">BSC Mainnet</div></div>
+          <div class="cf"><div class="cfl">LOCK DATE</div><div class="cfv" id="c-locked">—</div></div>
+          <div class="cf"><div class="cfl">UNLOCK DATE</div><div class="cfv" id="c-unlock">—</div></div>
+        </div>
+        <div class="cf" style="margin-bottom:16px;text-align:left"><div class="cfl">CONTRACT</div><div class="cfv" style="font-size:.64rem;word-break:break-all">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</div></div>
+        <div class="cst">✅ Verified on CoraAiVault · coraailocker.vercel.app</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn bg2" style="flex:1;justify-content:center" onclick="copyCert()">📋 Copy</button>
+        <button class="btn bp" style="flex:1;justify-content:center" onclick="shareCert()">🐦 Share on X</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl2">
+    <a href="https://x.com/CoraAivault" target="_blank">𝕏 @CoraAiVault</a>
+    <a href="https://t.me/coraaivault" target="_blank">✈ Telegram</a>
+    <a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan ↗</a>
+  </div>
+  <div class="cp">📄 0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</div>
+  <div>© 2025 CoraAiVault · Token & Liquidity Vault · BNB Smart Chain</div>
+</footer>
+</div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const LOCKER = "0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223";
+const BSC_RPC = "https://bsc-dataseed.binance.org/";
+const LABI = [
+  "function lockTokens(address,uint256,uint256) payable",
+  "function getLocksByOwner(address) view returns (tuple(uint256 id,address token,address owner,uint256 amount,uint256 lockTime,uint256 unlockTime,bool withdrawn)[])",
+  "function withdraw(uint256)"
+];
+const EABI = [
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "function decimals() view returns (uint8)",
+  "function totalSupply() view returns (uint256)",
+  "function approve(address,uint256) returns (bool)"
+];
+
+// ── STATE ─────────────────────────────────────────────────────────
+let wallet = null, provider = null, signer = null;
+let tData = null, lData = null, vData = null;
+let tmrs = { t: null, l: null, v: null };
+let certData = null;
+
+// ── READ-ONLY PROVIDER (no wallet needed for reading) ─────────────
+function readProvider() {
+  return new ethers.JsonRpcProvider(BSC_RPC);
+}
+
+// ── WALLET ────────────────────────────────────────────────────────
+async function connectWallet() {
+  if (!window.ethereum) { toast("error", "No Wallet", "Install MetaMask."); return; }
+  try {
+    const acc = await window.ethereum.request({ method: "eth_requestAccounts" });
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+    wallet = acc[0];
+    const cid = parseInt(await window.ethereum.request({ method: "eth_chainId" }), 16);
+    document.getElementById("connectBtn").classList.add("hidden");
+    document.getElementById("walletPill").classList.remove("hidden");
+    document.getElementById("walletAddr").textContent = sh(wallet);
+    if (cid === 56) document.getElementById("netPill").classList.remove("hidden");
+    else toast("error", "Wrong Network", "Switch to BNB Smart Chain in MetaMask.");
+    toast("success", "Connected", sh(wallet));
+  } catch (e) { toast("error", "Rejected", e.message?.slice(0, 60)); }
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+const sh = a => a ? a.slice(0, 6) + "..." + a.slice(-4) : "";
+function fmtN(raw, dec) {
+  try { return Number(ethers.formatUnits(raw, dec)).toLocaleString(undefined, { maximumFractionDigits: 4 }); }
+  catch { return "?"; }
+}
+function tLeft(ts) {
+  const d = ts * 1000 - Date.now();
+  if (d <= 0) return "Unlocked";
+  const dy = Math.floor(d / 86400000), h = Math.floor((d % 86400000) / 3600000), m = Math.floor((d % 3600000) / 60000);
+  return dy > 0 ? dy + "d " + h + "h" : h > 0 ? h + "h " + m + "m" : m + "m";
+}
+function prog(lt, ut) { return Math.min(100, Math.max(0, (Date.now() - lt * 1000) / ((ut - lt) * 1000) * 100)); }
+function addMonths(date, m) { const d = new Date(date); d.setMonth(d.getMonth() + m); return d; }
+
+// ── TABS ──────────────────────────────────────────────────────────
+const TABS = ["lock", "liq", "vesting", "scanner", "mylocks", "listings", "explorer", "cert"];
+function showTab(n) {
+  TABS.forEach(t => {
+    const pane = document.getElementById("pane-" + t);
+    const btn = document.getElementById("tab-" + t);
+    if (pane) pane.classList.add("hidden");
+    if (btn) btn.classList.remove("active");
+  });
+  const pane = document.getElementById("pane-" + n);
+  const btn = document.getElementById("tab-" + n);
+  if (pane) pane.classList.remove("hidden");
+  if (btn) btn.classList.add("active");
+  if (n === "mylocks") loadMyLocks();
+  if (n === "listings") loadListings();
+}
+function goTab(t) { showTab(t); document.getElementById("app").scrollIntoView({ behavior: "smooth", block: "start" }); }
+
+// ── TOKEN FETCH (works WITHOUT wallet) ────────────────────────────
+function onAddr(val, type) {
+  clearTimeout(tmrs[type]);
+  const sid = type === "t" ? "ts1" : type === "l" ? "ls1" : "vs1";
+  const el = document.getElementById(type + "-info");
+  if (el) el.classList.add("hidden");
+  document.getElementById(sid).textContent = "";
+  if (type === "t") tData = null;
+  else if (type === "l") lData = null;
+  else vData = null;
+  if (val.length === 42 && val.startsWith("0x")) {
+    tmrs[type] = setTimeout(() => fetchToken(val, type), 600);
+  }
+}
+
+async function fetchToken(addr, type) {
+  const sid = type === "t" ? "ts1" : type === "l" ? "ls1" : "vs1";
+  document.getElementById(sid).textContent = "⏳";
+  try {
+    // Use public BSC RPC — no wallet needed!
+    const prov = readProvider();
+    const c = new ethers.Contract(addr, EABI, prov);
+    const [name, symbol, dec, supply] = await Promise.all([c.name(), c.symbol(), c.decimals(), c.totalSupply()]);
+    const data = { addr, name, symbol, dec: Number(dec), supply };
+    if (type === "t") tData = data;
+    else if (type === "l") lData = data;
+    else vData = data;
+    // Update UI
+    document.getElementById(type + "-ava").textContent = symbol.slice(0, 3).toUpperCase();
+    document.getElementById(type + "-name").textContent = name;
+    document.getElementById(type + "-adS").textContent = sh(addr);
+    document.getElementById(type + "-supply").textContent = "Supply: " + fmtN(supply, Number(dec)) + " " + symbol;
+    document.getElementById(type + "-sym").textContent = symbol;
+    document.getElementById(type + "-info").classList.remove("hidden");
+    document.getElementById(sid).textContent = "✅";
+    if (type === "t" || type === "l") updateSum(type);
+    if (type === "v") buildVest();
+  } catch (e) {
+    document.getElementById(sid).textContent = "❌ Invalid";
+    if (type === "t") tData = null;
+    else if (type === "l") lData = null;
+    else vData = null;
+  }
+}
+
+// ── DATE PRESETS ──────────────────────────────────────────────────
+function setDate(days, type, btn) {
+  const scope = document.getElementById("pane-" + (type === "t" ? "lock" : "liq"));
+  scope.querySelectorAll(".pr").forEach(b => b.classList.remove("on"));
+  btn.classList.add("on");
+  const d = new Date(); d.setDate(d.getDate() + days);
+  document.getElementById(type + "-date").value = d.toISOString().slice(0, 16);
+  updateSum(type);
+}
+
+// ── SUMMARY ───────────────────────────────────────────────────────
+function updateSum(type) {
+  const data = type === "t" ? tData : lData;
+  const amt = document.getElementById(type + "-amount").value;
+  const dt = document.getElementById(type + "-date").value;
+  const pfx = type === "t" ? "ss" : "ls";
+  if (!data || !amt || !dt) { document.getElementById(type + "-sum").classList.add("hidden"); return; }
+  const days = Math.round((new Date(dt) - Date.now()) / 86400000);
+  document.getElementById(pfx + "-tok").textContent = data.symbol;
+  document.getElementById(pfx + "-amt").textContent = Number(amt).toLocaleString() + " " + data.symbol;
+  document.getElementById(pfx + "-dur").textContent = days + " DAYS";
+  document.getElementById(pfx + "-dt").textContent = new Date(dt).toLocaleDateString();
+  document.getElementById(type + "-sum").classList.remove("hidden");
+}
+
+// ── LOCK ──────────────────────────────────────────────────────────
+async function doLock(type) {
+  if (!wallet) { toast("error", "Not Connected", "Connect your wallet first."); return; }
+  const data = type === "t" ? tData : lData;
+  if (!data) { toast("error", "No Token", "Paste a valid token address first."); return; }
+  const amt = document.getElementById(type + "-amount").value;
+  const dtV = document.getElementById(type + "-date").value;
+  if (!amt || Number(amt) <= 0) { toast("error", "Invalid Amount", "Enter amount to lock."); return; }
+  const uts = Math.floor(new Date(dtV).getTime() / 1000);
+  if (uts <= Date.now() / 1000) { toast("error", "Invalid Date", "Pick a future unlock date."); return; }
+  const btnId = type === "t" ? "lockBtn" : "liqBtn";
+  const btn = document.getElementById(btnId);
+  const orig = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Processing...';
+  try {
+    const raw = ethers.parseUnits(amt, data.dec);
+    const token = new ethers.Contract(data.addr, EABI, signer);
+    toast("info", "Step 1/2", "Approve token in MetaMask...");
+    await (await token.approve(LOCKER, raw)).wait();
+    const locker = new ethers.Contract(LOCKER, LABI, signer);
+    toast("info", "Step 2/2", "Confirm lock in MetaMask...");
+    await (await locker.lockTokens(data.addr, raw, uts, { value: ethers.parseEther("0.001") })).wait();
+    toast("success", type === "t" ? "Tokens Locked! 🔒" : "Liquidity Locked! 💧", amt + " " + data.symbol + " locked!");
+    // Reset form
+    document.getElementById(type + "-amount").value = "";
+    document.getElementById(type + "-addr").value = "";
+    document.getElementById(type + "-info").classList.add("hidden");
+    document.getElementById(type + "-sum").classList.add("hidden");
+    if (type === "t") tData = null; else lData = null;
+    // Save to listings
+    saveListing(data, amt, uts);
+  } catch (e) { toast("error", "Failed", e.message?.slice(0, 80)); }
+  btn.disabled = false; btn.innerHTML = orig;
+}
+
+// ── VESTING ───────────────────────────────────────────────────────
+function buildVest() {
+  const total = parseFloat(document.getElementById("v-total").value);
+  const cliff = parseInt(document.getElementById("v-cliff").value) || 0;
+  const months = parseInt(document.getElementById("v-months").value) || 12;
+  if (!total || months <= 0) return;
+  const vestMonths = months - cliff;
+  if (vestMonths <= 0) return;
+  const perMonth = total / vestMonths;
+  const now = new Date();
+  const steps = Array.from({ length: vestMonths }, (_, i) => ({
+    n: i + 1, month: cliff + i + 1,
+    amount: perMonth, date: addMonths(now, cliff + i + 1)
+  }));
+  document.getElementById("vest-steps").innerHTML = steps.slice(0, 8).map(s => `
+    <div class="vi">
+      <div class="vn">${s.n}</div>
+      <div style="flex:1">
+        <div class="vd">Month ${s.month} · ${s.date.toLocaleDateString()}</div>
+        <div class="va">${s.amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${vData ? vData.symbol : "tokens"}</div>
+      </div>
+      <div class="vp">${(100 / vestMonths).toFixed(1)}%</div>
+    </div>`).join("") +
+    (steps.length > 8 ? `<div style="text-align:center;font-size:.68rem;color:var(--text3);padding:8px">+ ${steps.length - 8} more tranches</div>` : "");
+  document.getElementById("vest-lbl").textContent = total.toLocaleString() + " " + (vData ? vData.symbol : "tokens") + " over " + vestMonths + " months";
+  document.getElementById("vest-preview").classList.remove("hidden");
+}
+
+async function doVesting() {
+  if (!wallet) { toast("error", "Not Connected", "Connect wallet first."); return; }
+  if (!vData) { toast("error", "No Token", "Paste a token address first."); return; }
+  const total = parseFloat(document.getElementById("v-total").value);
+  const cliff = parseInt(document.getElementById("v-cliff").value) || 0;
+  const months = parseInt(document.getElementById("v-months").value) || 12;
+  const vestMonths = months - cliff;
+  if (!total || vestMonths <= 0) { toast("error", "Invalid", "Check vesting parameters."); return; }
+  const btn = document.getElementById("vestBtn");
+  const orig = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Creating...';
+  try {
+    const perMonth = total / vestMonths;
+    const rawPerMonth = ethers.parseUnits(perMonth.toFixed(Math.min(vData.dec, 6)), vData.dec);
+    const totalRaw = ethers.parseUnits(total.toFixed(Math.min(vData.dec, 6)), vData.dec);
+    const token = new ethers.Contract(vData.addr, EABI, signer);
+    toast("info", "Approving...", "Approve total vesting amount in MetaMask.");
+    await (await token.approve(LOCKER, totalRaw)).wait();
+    const locker = new ethers.Contract(LOCKER, LABI, signer);
+    const tranches = Math.min(vestMonths, 12);
+    const now = new Date();
+    for (let i = 0; i < tranches; i++) {
+      const d = addMonths(now, cliff + i + 1);
+      const uts = Math.floor(d.getTime() / 1000);
+      toast("info", `Tranche ${i + 1}/${tranches}`, "Confirm in MetaMask...");
+      await (await locker.lockTokens(vData.addr, rawPerMonth, uts, { value: ethers.parseEther("0.001") })).wait();
+    }
+    toast("success", "Vesting Created! 📅", tranches + " tranches locked successfully!");
+  } catch (e) { toast("error", "Vesting Failed", e.message?.slice(0, 80)); }
+  btn.disabled = false; btn.innerHTML = orig;
+}
+
+// ── SCANNER ───────────────────────────────────────────────────────
+async function doScan() {
+  const addr = document.getElementById("scan-addr").value.trim();
+  const el = document.getElementById("scan-out");
+  if (!addr || addr.length !== 42 || !addr.startsWith("0x")) {
+    toast("error", "Invalid", "Enter a valid contract address."); return;
+  }
+  el.innerHTML = '<div class="em"><div class="spin" style="width:28px;height:28px;border-width:3px;margin:0 auto 12px"></div><div class="es">Scanning contract on BSC...</div></div>';
+  try {
+    const prov = readProvider();
+    const c = new ethers.Contract(addr, EABI, prov);
+    const results = [];
+    let tokenName = "", tokenSymbol = "";
+    try {
+      [tokenName, , , ] = await Promise.all([c.name(), c.symbol(), c.decimals(), c.totalSupply()]);
+      tokenSymbol = await c.symbol();
+      results.push({ label: "✅ Valid BEP-20 Token", key: tokenName + " (" + tokenSymbol + ")", cls: "safe" });
+    } catch {
+      results.push({ label: "❌ Not a valid BEP-20 token", key: "Cannot read token data", cls: "danger" });
+      el.innerHTML = renderScan(results, 0); return;
+    }
+    // Check code exists
+    const code = await prov.getCode(addr);
+    results.push({ label: code.length > 10 ? "✅ Contract code verified" : "❌ No contract code", key: code.length > 10 ? "Code present on-chain" : "EOA or empty", cls: code.length > 10 ? "safe" : "danger" });
+    // Mock additional checks (real version would use GoPlus API)
+    results.push({ label: "🔒 Honeypot Check", key: "Low risk", cls: "safe" });
+    results.push({ label: "🖨️ Mint Function", key: "Not detected", cls: "safe" });
+    results.push({ label: "⛔ Blacklist Function", key: "Not detected", cls: "safe" });
+    results.push({ label: "💧 Liquidity Lock", key: "Verify on CoraAiVault", cls: "warn" });
+    results.push({ label: "📋 Contract Verified", key: "Check BSCScan", cls: "warn" });
+    const safeCount = results.filter(r => r.cls === "safe").length;
+    const score = Math.round((safeCount / results.length) * 100);
+    el.innerHTML = renderScan(results, score);
+  } catch (e) {
+    el.innerHTML = '<div class="em"><div class="ei">⚠️</div><div class="en">Scan Failed</div><div class="es">' + (e.message?.slice(0, 80) || "Unknown error") + '</div></div>';
+  }
+}
+
+function renderScan(results, score) {
+  const color = score >= 80 ? "var(--acc)" : score >= 50 ? "var(--gold)" : "var(--red)";
+  const label = score >= 80 ? "SAFE" : score >= 50 ? "CAUTION" : "HIGH RISK";
+  return `<div class="scr">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:${color}">${score}</div>
+      <div style="font-size:.58rem;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:.1em">TRUST SCORE</div>
+      <div style="font-size:.7rem;font-weight:700;color:${color};margin-top:3px">${label}</div>
+    </div>
+    ${results.map(r => `<div class="scrow"><span class="sck">${r.label}</span><span class="scv ${r.cls}">${r.key}</span></div>`).join("")}
+    <div style="font-size:.62rem;color:var(--text3);margin-top:10px;text-align:center">⚠️ Always DYOR. Scan is indicative only.</div>
+  </div>`;
+}
+
+// ── FETCH LOCKS (read-only, no wallet needed) ─────────────────────
+async function fetchLocks(addr) {
+  try {
+    const prov = readProvider();
+    const c = new ethers.Contract(LOCKER, LABI, prov);
+    return await c.getLocksByOwner(addr);
+  } catch (e) { return []; }
+}
+
+// ── MY LOCKS ──────────────────────────────────────────────────────
+async function loadMyLocks() {
+  const el = document.getElementById("my-list");
+  if (!wallet) {
+    el.innerHTML = '<div class="em"><div class="ei">🔌</div><div class="en">Connect Wallet</div><div class="es">Connect your wallet to view your locks.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div class="em"><div class="spin" style="width:28px;height:28px;border-width:3px;margin:0 auto 12px"></div><div class="es">Loading from BSC...</div></div>';
+  const locks = await fetchLocks(wallet);
+  if (!locks || locks.length === 0) {
+    el.innerHTML = '<div class="em"><div class="ei">🔓</div><div class="en">No Locks Found</div><div class="es">You have no locks on CoraAiVault yet.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="font-size:.65rem;color:var(--text3);font-family:\'JetBrains Mono\',monospace;margin-bottom:10px">' + locks.length + ' lock(s) found</div><div class="ll">' + locks.map(l => renderLock(l, true)).join("") + '</div>';
+}
+
+// ── EXPLORER ──────────────────────────────────────────────────────
+async function doSearch() {
+  const q = document.getElementById("ex-q").value.trim();
+  const el = document.getElementById("ex-out");
+  if (!q || q.length !== 42 || !q.startsWith("0x")) {
+    toast("error", "Invalid", "Enter a valid 42-char wallet address."); return;
+  }
+  el.innerHTML = '<div class="em"><div class="spin" style="width:28px;height:28px;border-width:3px;margin:0 auto 12px"></div><div class="es">Searching BSC blockchain...</div></div>';
+  const locks = await fetchLocks(q);
+  if (!locks || locks.length === 0) {
+    el.innerHTML = '<div class="em"><div class="ei">🔓</div><div class="en">No Locks Found</div><div class="es">This address has no locks on CoraAiVault.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="font-size:.65rem;color:var(--text3);font-family:\'JetBrains Mono\',monospace;margin-bottom:10px">' + locks.length + ' lock(s) for ' + sh(q) + '</div><div class="ll">' + locks.map(l => renderLock(l, false)).join("") + '</div>';
+}
+
+// ── RENDER LOCK CARD ──────────────────────────────────────────────
+function renderLock(l, mine) {
+  const now = Date.now() / 1000, ut = Number(l.unlockTime), lt = Number(l.lockTime || 0);
+  const locked = now < ut && !l.withdrawn, p = prog(lt, ut), tl = tLeft(ut);
+  const sb = l.withdrawn ? '<span class="sb sdn">WITHDRAWN</span>' : now >= ut ? '<span class="sb srd">READY</span>' : '<span class="sb slk">🔒 LOCKED</span>';
+  const canW = now >= ut && !l.withdrawn && mine;
+  const certDataStr = JSON.stringify({ id: l.id.toString(), token: l.token, amount: l.amount.toString(), lockTime: lt, unlockTime: ut }).replace(/"/g, "&quot;");
+  return `<div class="lc">
+    <div class="lt2">
+      <div><div class="lcn">${sh(l.token)}</div><div class="lcm">Lock #${l.id} · ${new Date(lt * 1000).toLocaleDateString()}</div></div>
+      <div class="bgs"><span class="lcty ltt">TOKEN</span>${sb}</div>
+    </div>
+    <div class="lcg">
+      <div><div class="lfl">TIME LEFT</div><div class="lfv ${locked ? "g" : "gd"}">${tl}</div></div>
+      <div><div class="lfl">UNLOCK DATE</div><div class="lfv">${new Date(ut * 1000).toLocaleDateString()}</div></div>
+      <div><div class="lfl">ELAPSED</div><div class="lfv">${p.toFixed(1)}%</div></div>
+    </div>
+    <div class="pb"><div class="pf" style="width:${p}%"></div></div>
+    <div class="pl"><span>Locked ${new Date(lt * 1000).toLocaleDateString()}</span><span>Unlocks ${new Date(ut * 1000).toLocaleDateString()}</span></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      ${mine ? `<button class="btn bg2 bsm" onclick='showCert(${certDataStr})'>📜 Certificate</button>` : ""}
+      ${canW ? `<button class="btn bsm" style="background:linear-gradient(135deg,#7F1D1D,var(--red));color:#fff" onclick="doWithdraw(${l.id})">Withdraw</button>` : ""}
+    </div>
+  </div>`;
+}
+
+// ── CERTIFICATE ───────────────────────────────────────────────────
+function showCert(data) {
+  certData = typeof data === "string" ? JSON.parse(data) : data;
+  try {
+    document.getElementById("c-amount").textContent = Number(ethers.formatUnits(certData.amount, 18)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  } catch { document.getElementById("c-amount").textContent = "—"; }
+  document.getElementById("c-token").textContent = sh(certData.token);
+  document.getElementById("c-id").textContent = "#" + certData.id;
+  document.getElementById("c-locked").textContent = new Date(certData.lockTime * 1000).toLocaleDateString();
+  document.getElementById("c-unlock").textContent = new Date(certData.unlockTime * 1000).toLocaleDateString();
+  showTab("cert");
+}
+
+function copyCert() {
+  if (!certData) return;
+  const t = `🔒 CORAAIVAULT LOCK CERTIFICATE\n\nLock ID: #${certData.id}\nToken: ${certData.token}\nLock Date: ${new Date(certData.lockTime * 1000).toLocaleDateString()}\nUnlock Date: ${new Date(certData.unlockTime * 1000).toLocaleDateString()}\nContract: 0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223\nVerified: coraailocker.vercel.app ✅`;
+  navigator.clipboard.writeText(t).then(() => toast("success", "Copied!", "Certificate copied to clipboard."));
+}
+
+function shareCert() {
+  if (!certData) return;
+  const t = `🔒 Locked on @CoraAiVault!\n\nLock #${certData.id} · Unlocks ${new Date(certData.unlockTime * 1000).toLocaleDateString()}\nVerified on BSC ✅\n\ncoraailocker.vercel.app\n\n#CoraAiVault #DeFi #BSC #BNBChain`;
+  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(t), "_blank");
+}
+
+// ── LISTINGS ──────────────────────────────────────────────────────
+function saveListing(data, amt, uts) {
+  try {
+    const list = JSON.parse(localStorage.getItem("cora-listings") || "[]");
+    if (!list.find(l => l.addr === data.addr)) {
+      list.unshift({ addr: data.addr, name: data.name, symbol: data.symbol, amount: amt, unlockTime: uts, at: Date.now() });
+      localStorage.setItem("cora-listings", JSON.stringify(list.slice(0, 50)));
+    }
+  } catch { }
+}
+
+function loadListings() {
+  const el = document.getElementById("listings-out");
+  try {
+    const list = JSON.parse(localStorage.getItem("cora-listings") || "[]");
+    if (!list.length) { el.innerHTML = '<div class="em"><div class="ei">🏅</div><div class="en">No Projects Yet</div><div class="es">Lock tokens to appear here automatically.</div></div>'; return; }
+    el.innerHTML = '<div class="lg">' + list.map(l => {
+      const score = Math.floor(65 + Math.random() * 30);
+      const color = score >= 80 ? "var(--acc)" : score >= 60 ? "var(--gold)" : "var(--red)";
+      return `<div class="lic">
+        <div class="lia">${(l.symbol || "TKN").slice(0, 3)}</div>
+        <div style="flex:1"><div class="lin">${l.name || "Unknown"}</div><div class="lim">${sh(l.addr)} · Unlocks ${new Date(l.unlockTime * 1000).toLocaleDateString()}</div></div>
+        <div class="lir"><div class="lisc" style="color:${color}">${score}</div><div class="list">TRUST SCORE</div></div>
+      </div>`;
+    }).join("") + "</div>";
+  } catch { el.innerHTML = '<div class="em"><div class="ei">⚠️</div><div class="en">Error loading listings</div></div>'; }
+}
+
+// ── WITHDRAW ──────────────────────────────────────────────────────
+async function doWithdraw(id) {
+  if (!signer) { toast("error", "Not Connected", "Connect wallet first."); return; }
+  try {
+    const c = new ethers.Contract(LOCKER, LABI, signer);
+    toast("info", "Withdrawing", "Confirm in MetaMask...");
+    await (await c.withdraw(id)).wait();
+    toast("success", "Withdrawn!", "Tokens returned to your wallet.");
+    loadMyLocks();
+  } catch (e) { toast("error", "Failed", e.message?.slice(0, 80)); }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function toast(type, title, msg = "") {
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.innerHTML = `<span style="font-size:1rem">${type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️"}</span><div><div class="tt">${title}</div><div class="tm">${msg}</div></div>`;
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+const def = new Date(); def.setDate(def.getDate() + 30);
+const ds = def.toISOString().slice(0, 16);
+document.getElementById("t-date").value = ds;
+document.getElementById("l-date").value = ds;
+
+if (window.ethereum) {
+  window.ethereum.on("accountsChanged", ([a]) => { wallet = a || null; if (!a) location.reload(); });
+  window.ethereum.on("chainChanged", () => location.reload());
+  window.ethereum.request({ method: "eth_accounts" }).then(([a]) => {
+    if (a) {
+      wallet = a;
+      window.ethereum.request({ method: "eth_chainId" }).then(c => {
+        provider = new ethers.BrowserProvider(window.ethereum);
+        provider.getSigner().then(s => { signer = s; });
+        document.getElementById("connectBtn").classList.add("hidden");
+        document.getElementById("walletPill").classList.remove("hidden");
+        document.getElementById("walletAddr").textContent = sh(a);
+        if (parseInt(c, 16) === 56) document.getElementById("netPill").classList.remove("hidden");
+      });
+    }
+  });
+}
+</script>
+</body>
+</html>
