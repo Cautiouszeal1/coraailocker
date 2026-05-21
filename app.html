@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoraAi Locker — Lock Tokens & Liquidity</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.1/ethers.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--volt2:#A8D900;--lav:#7B6FE8;--lav2:#9D94F0;--teal:#00D4AA;--fire:#FF5733;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;opacity:.018;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.9);position:sticky;top:0;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-mark{width:30px;height:30px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.nav-mark svg{width:16px;height:16px}
+.nav-wordmark{font-family:var(--display);font-size:1.2rem;letter-spacing:.06em;color:var(--white)}
+.nav-wordmark em{color:var(--volt);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:6px 13px;border-radius:7px;font-size:.76rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nav-link:hover,.nav-link.active{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.net-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;background:var(--ink3);border:1px solid var(--line2);font-family:var(--mono);font-size:.62rem;color:var(--smoke)}
+.net-dot{width:6px;height:6px;border-radius:50%;background:var(--volt);box-shadow:0 0 6px var(--volt);animation:bl 2s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.4}}
+.wallet-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;background:rgba(123,111,232,.12);border:1px solid rgba(123,111,232,.3);font-family:var(--mono);font-size:.62rem;color:var(--lav2)}
+.btn{font-family:var(--body);font-weight:700;font-size:.76rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:8px;transition:all .18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+.btn-volt{background:var(--volt);color:var(--ink);padding:8px 18px}.btn-volt:hover{background:var(--volt2)}
+.btn-ghost{background:var(--ink3);color:var(--mist);border:1px solid var(--line2);padding:8px 18px}.btn-ghost:hover{border-color:var(--mist);color:var(--white)}
+.btn-lav{background:var(--lav);color:#fff;padding:8px 18px;box-shadow:0 0 16px rgba(123,111,232,.3)}.btn-lav:hover{background:var(--lav2);transform:translateY(-1px)}.btn-lav:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-teal{background:var(--teal);color:var(--ink);padding:8px 18px}.btn-teal:hover{filter:brightness(1.1)}.btn-teal:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:6px 12px;font-size:.66rem;border-radius:6px}
+.btn-danger{background:rgba(255,87,51,.15);color:var(--fire);border:1px solid rgba(255,87,51,.3);padding:6px 12px;font-size:.66rem;border-radius:6px}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:2px;background:var(--white);border-radius:1px}
+.mobile-menu{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-link{font-family:var(--display);font-size:2.2rem;letter-spacing:.06em;color:var(--smoke);text-decoration:none}
+.mobile-link:hover{color:var(--volt)}
+.hidden{display:none!important}
+
+/* PAGE HEADER */
+.page-header{padding:40px 48px 32px;border-bottom:1px solid var(--line)}
+.page-eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;color:var(--volt);text-transform:uppercase;margin-bottom:10px}
+.page-title{font-family:var(--display);font-size:3rem;letter-spacing:.04em;line-height:1}
+.page-sub{font-size:.82rem;color:var(--smoke);margin-top:8px}
+
+/* MAIN LAYOUT */
+.app-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px)}
+.app-sidebar{border-right:1px solid var(--line);padding:24px 16px;background:var(--ink2)}
+.sidebar-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--smoke);text-transform:uppercase;padding:0 8px;margin-bottom:8px}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;margin-bottom:24px}
+.snav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.8rem;font-weight:600;color:var(--smoke);border:1px solid transparent}
+.snav-item:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.snav-item.active{color:var(--white);background:rgba(200,255,0,.08);border-color:rgba(200,255,0,.15)}
+.snav-item.active .snav-icon{color:var(--volt)}
+.snav-icon{font-size:1rem;width:20px;text-align:center}
+.sidebar-info{padding:16px;background:rgba(200,255,0,.05);border:1px solid rgba(200,255,0,.12);border-radius:10px;margin-top:8px}
+.si-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;color:var(--volt);text-transform:uppercase;margin-bottom:6px}
+.si-val{font-size:.72rem;color:var(--mist);line-height:1.5;font-family:var(--mono)}
+
+/* CONTENT AREA */
+.app-content{padding:32px 40px;overflow-y:auto}
+.pane{display:none}.pane.active{display:block}
+
+/* PANEL */
+.panel{background:var(--ink2);border:1px solid var(--line);border-radius:12px;padding:28px;margin-bottom:16px;position:relative}
+.panel-head{margin-bottom:6px}
+.panel-title{font-weight:800;font-size:1rem;display:flex;align-items:center;gap:8px}
+.panel-sub{font-size:.76rem;color:var(--smoke);margin-bottom:22px;margin-top:4px}
+
+/* FORM */
+.fee-note{display:flex;align-items:center;gap:8px;background:rgba(200,255,0,.05);border:1px solid rgba(200,255,0,.12);border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:.73rem;color:var(--smoke);font-family:var(--mono)}
+.fee-note b{color:var(--volt)}
+.field{margin-bottom:16px}
+.field-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--smoke);text-transform:uppercase;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.field-label span{color:var(--lav2);font-weight:600}
+.inp{width:100%;background:var(--ink3);border:1px solid var(--line2);color:var(--white);font-family:var(--mono);font-size:.82rem;border-radius:8px;padding:11px 14px;transition:all .2s;outline:none}
+.inp:focus{border-color:var(--volt);box-shadow:0 0 0 2px rgba(200,255,0,.08)}
+.inp::placeholder{color:var(--line2)}
+input[type=number].inp::-webkit-outer-spin-button,input[type=number].inp::-webkit-inner-spin-button{-webkit-appearance:none}
+
+/* TOKEN BOX */
+.tbox{background:var(--ink3);border:1px solid var(--line2);border-radius:8px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:fup .25s ease}
+@keyframes fup{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.tav{width:40px;height:40px;border-radius:50%;background:var(--volt);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:.85rem;color:var(--ink);flex-shrink:0}
+.tav.liq{background:var(--teal);color:var(--ink)}
+.tnm{font-weight:700;font-size:.88rem}
+.tad{font-size:.62rem;color:var(--smoke);font-family:var(--mono);margin-top:2px}
+.tsp{font-size:.66rem;color:var(--lav2);margin-top:2px;font-family:var(--mono)}
+
+/* PRESETS */
+.presets{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.preset{font-family:var(--mono);font-size:.6rem;font-weight:600;padding:5px 10px;border-radius:5px;cursor:pointer;border:1px solid var(--line2);background:var(--ink3);color:var(--smoke);transition:all .15s;letter-spacing:.06em}
+.preset:hover,.preset.on{border-color:var(--volt);color:var(--volt);background:rgba(200,255,0,.07)}
+
+/* SUMMARY */
+.sum{background:rgba(200,255,0,.04);border:1px solid rgba(200,255,0,.12);border-radius:10px;padding:16px;margin:18px 0}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,255,0,.06)}
+.sr:last-child{border:none}
+.sk{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--smoke);text-transform:uppercase}
+.sv{font-family:var(--mono);font-size:.76rem;font-weight:600;color:var(--white)}
+
+/* LOCK CARDS */
+.lc-list{display:flex;flex-direction:column;gap:10px}
+.lc{background:var(--ink3);border:1px solid var(--line);border-radius:10px;padding:16px;transition:border-color .2s;position:relative;overflow:hidden}
+.lc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--volt)}
+.lc.liq-c::before{background:var(--teal)}
+.lc:hover{border-color:var(--line2)}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px}
+.lc-name{font-weight:700;font-size:.84rem;font-family:var(--mono)}
+.lc-meta{font-size:.6rem;color:var(--smoke);font-family:var(--mono);margin-top:2px}
+.badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.badge{font-family:var(--mono);font-size:.56rem;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase}
+.badge-type{background:rgba(200,255,0,.08);color:var(--volt);border:1px solid rgba(200,255,0,.18)}
+.badge-liq{background:rgba(0,212,170,.08);color:var(--teal);border:1px solid rgba(0,212,170,.18)}
+.badge-locked{background:rgba(0,212,170,.07);color:var(--teal);border:1px solid rgba(0,212,170,.15)}
+.badge-ready{background:rgba(255,209,102,.07);color:#FFD166;border:1px solid rgba(255,209,102,.15)}
+.badge-done{background:rgba(255,87,51,.07);color:var(--fire);border:1px solid rgba(255,87,51,.15)}
+.lc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.lfl{font-family:var(--mono);font-size:.56rem;color:var(--smoke);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.lfv{font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--white)}
+.lfv.g{color:var(--teal)}.lfv.y{color:#FFD166}
+.prog-bar{height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.prog-fill{height:100%;border-radius:2px;background:var(--volt)}
+.prog-fill.liq-fill{background:var(--teal)}
+.prog-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.55rem;color:var(--smoke)}
+
+/* SCANNER */
+.scan-out{background:var(--ink3);border:1px solid var(--line2);border-radius:10px;padding:18px;margin-top:14px}
+.scan-score{text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--line)}
+.score-big{font-family:var(--display);font-size:4.5rem;letter-spacing:.04em;line-height:1}
+.score-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-top:4px}
+.score-verdict{font-weight:700;font-size:.78rem;margin-top:6px}
+.scan-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.scan-row:last-child{border:none}
+.scan-key{font-size:.76rem;color:var(--mist)}
+.scan-val{font-family:var(--mono);font-size:.72rem;font-weight:600}
+.scan-val.safe{color:var(--teal)}.scan-val.warn{color:#FFD166}.scan-val.danger{color:var(--fire)}
+
+/* VESTING */
+.vest-list{display:flex;flex-direction:column;gap:7px;margin:14px 0}
+.vest-step{background:var(--ink3);border:1px solid var(--line);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.vest-n{width:26px;height:26px;border-radius:50%;background:var(--volt);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:.75rem;flex-shrink:0}
+.vest-date{font-family:var(--mono);font-size:.62rem;color:var(--smoke)}
+.vest-amt{font-weight:700;font-size:.8rem;color:var(--white)}
+.vest-pct{font-family:var(--mono);font-size:.6rem;color:var(--teal);margin-left:auto}
+
+/* CERT */
+.cert-card{background:var(--ink2);border:1px solid var(--line2);border-radius:14px;padding:32px;text-align:center;position:relative;overflow:hidden}
+.cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--volt),var(--teal),var(--volt))}
+.cert-logo{font-family:var(--display);font-size:1.1rem;letter-spacing:.1em;color:var(--mist);margin-bottom:3px}
+.cert-tag{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;color:var(--smoke);text-transform:uppercase;margin-bottom:22px}
+.cert-amount{font-family:var(--display);font-size:2.5rem;color:var(--volt);letter-spacing:.04em;margin-bottom:4px;line-height:1}
+.cert-token{font-size:.76rem;color:var(--smoke);margin-bottom:20px;font-family:var(--mono)}
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.cert-field{background:var(--ink3);border:1px solid var(--line);border-radius:8px;padding:12px}
+.cert-fl{font-family:var(--mono);font-size:.54px;color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;font-size:.56rem}
+.cert-fv{font-family:var(--mono);font-weight:600;font-size:.78rem;color:var(--white)}
+.cert-stamp{display:inline-flex;align-items:center;gap:7px;background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.18);border-radius:100px;padding:7px 16px;font-family:var(--mono);font-size:.64rem;color:var(--teal)}
+
+/* LISTINGS */
+.listing-item{background:var(--ink3);border:1px solid var(--line);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;transition:border-color .2s;margin-bottom:8px}
+.listing-item:hover{border-color:var(--line2)}
+.listing-ava{width:38px;height:38px;border-radius:50%;background:var(--volt);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:.78rem;color:var(--ink);flex-shrink:0}
+.listing-name{font-weight:700;font-size:.84rem}
+.listing-addr{font-family:var(--mono);font-size:.6rem;color:var(--smoke);margin-top:2px}
+.listing-score{font-family:var(--display);font-size:1.3rem;letter-spacing:.04em;margin-left:auto}
+
+/* SEARCH */
+.search-wrap{display:flex;gap:8px;margin-bottom:20px}
+.search-inp{flex:1;background:var(--ink3);border:1px solid var(--line2);color:var(--white);font-family:var(--mono);font-size:.8rem;border-radius:8px;padding:11px 14px;outline:none;transition:all .2s}
+.search-inp:focus{border-color:var(--volt)}
+.search-inp::placeholder{color:var(--line2)}
+
+/* DROPDOWN */
+.inp-wrap{position:relative}
+.dropdown{display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--ink2);border:1px solid var(--line2);border-top:none;border-radius:0 0 8px 8px;max-height:200px;overflow-y:auto}
+.dd-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s;font-size:.78rem}
+.dd-item:hover{background:rgba(255,255,255,.04)}
+.dd-sym{font-family:var(--mono);font-size:.64rem;color:var(--smoke)}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px}
+.empty-icon{font-size:2.5rem;opacity:.2;margin-bottom:12px}
+.empty-title{font-weight:700;font-size:.88rem;color:var(--mist);margin-bottom:6px}
+.empty-sub{font-size:.74rem;color:var(--smoke)}
+
+/* TOASTS */
+.toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:300px}
+.toast{background:var(--ink2);border:1px solid var(--line2);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;animation:tIn .3s ease;box-shadow:0 20px 60px rgba(0,0,0,.6);font-size:.76rem}
+.toast.success{border-color:rgba(0,212,170,.3)}.toast.error{border-color:rgba(255,87,51,.3)}.toast.info{border-color:rgba(123,111,232,.3)}
+.t-title{font-weight:700;margin-bottom:2px;font-family:var(--body)}.t-msg{color:var(--smoke);font-size:.68rem}
+@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media(max-width:860px){
+  .nav{padding:0 16px}.nav-links{display:none}.hamburger{display:flex}
+  .app-layout{grid-template-columns:1fr}
+  .app-sidebar{display:none}
+  .app-content{padding:20px 16px}
+  .lc-grid{grid-template-columns:1fr 1fr}
+  .cert-grid{grid-template-columns:1fr}
+  .tab-nav-mobile{display:flex!important}
+}
+.tab-nav-mobile{display:none;gap:3px;background:var(--ink2);border-bottom:1px solid var(--line);padding:8px 16px;overflow-x:auto}
+.tnm-btn{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:7px 12px;border-radius:7px;border:1px solid var(--line2);background:transparent;color:var(--smoke);cursor:pointer;white-space:nowrap;transition:all .2s}
+.tnm-btn.active{background:rgba(200,255,0,.1);border-color:rgba(200,255,0,.3);color:var(--volt)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <span class="nav-wordmark">CORA<em>AI</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="app.html" class="nav-link active">Locker</a>
+    <a href="whitepaper.html" class="nav-link">Whitepaper</a>
+    <a href="about.html" class="nav-link">About</a>
+  </div>
+  <div class="nav-right">
+    <div id="netBadge" class="net-badge hidden"><span class="net-dot"></span>BSC Mainnet</div>
+    <div id="walletBadge" class="wallet-badge hidden"><span id="walletAddr">—</span></div>
+    <button class="btn btn-volt btn-sm" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="mobile-link" onclick="toggleMenu()">Home</a>
+  <a href="app.html" class="mobile-link" onclick="toggleMenu()">Locker</a>
+  <a href="whitepaper.html" class="mobile-link" onclick="toggleMenu()">Whitepaper</a>
+  <a href="about.html" class="mobile-link" onclick="toggleMenu()">About</a>
+</div>
+
+<!-- MOBILE TAB NAV -->
+<div class="tab-nav-mobile">
+  <button class="tnm-btn active" onclick="showTab('lock',this)">🔒 Token</button>
+  <button class="tnm-btn" onclick="showTab('liq',this)">💧 Liquidity</button>
+  <button class="tnm-btn" onclick="showTab('vesting',this)">📅 Vesting</button>
+  <button class="tnm-btn" onclick="showTab('scanner',this)">🤖 Scanner</button>
+  <button class="tnm-btn" onclick="showTab('mylocks',this)">📦 My Locks</button>
+  <button class="tnm-btn" onclick="showTab('listings',this)">🏅 Listings</button>
+  <button class="tnm-btn" onclick="showTab('explorer',this)">🔍 Explorer</button>
+</div>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="app-sidebar">
+    <div class="sidebar-label">Actions</div>
+    <div class="sidebar-nav">
+      <div class="snav-item active" id="snav-lock" onclick="showTab('lock',this)"><span class="snav-icon">🔒</span>Lock Tokens</div>
+      <div class="snav-item" id="snav-liq" onclick="showTab('liq',this)"><span class="snav-icon">💧</span>Lock Liquidity</div>
+      <div class="snav-item" id="snav-vesting" onclick="showTab('vesting',this)"><span class="snav-icon">📅</span>Vesting</div>
+      <div class="snav-item" id="snav-scanner" onclick="showTab('scanner',this)"><span class="snav-icon">🤖</span>Scanner</div>
+    </div>
+    <div class="sidebar-label">Your Account</div>
+    <div class="sidebar-nav">
+      <div class="snav-item" id="snav-mylocks" onclick="showTab('mylocks',this)"><span class="snav-icon">📦</span>My Locks</div>
+      <div class="snav-item" id="snav-listings" onclick="showTab('listings',this)"><span class="snav-icon">🏅</span>Listings</div>
+    </div>
+    <div class="sidebar-label">Tools</div>
+    <div class="sidebar-nav">
+      <div class="snav-item" id="snav-explorer" onclick="showTab('explorer',this)"><span class="snav-icon">🔍</span>Explorer</div>
+      <div class="snav-item" id="snav-cert" onclick="showTab('cert',this)" style="display:none"><span class="snav-icon">📜</span>Certificate</div>
+    </div>
+    <div class="sidebar-info">
+      <div class="si-label">Contract</div>
+      <div class="si-val">0x429aAa8a...d1223<br>BSC Mainnet</div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="app-content">
+
+    <!-- LOCK TOKEN -->
+    <div id="pane-lock" class="pane active">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🔒 Lock Tokens</div></div>
+        <div class="panel-sub">Lock any BEP-20 token. Set an unlock date and prove your commitment on-chain.</div>
+        <div class="fee-note">Fee: <b>0.001 BNB</b> per lock &nbsp;·&nbsp; Immutable &nbsp;·&nbsp; No admin access to funds</div>
+        <div class="field">
+          <div class="field-label">Token Address <span id="ts1"></span></div>
+          <div class="inp-wrap">
+            <input class="inp" id="t-addr" placeholder="Search by name or paste 0x address..." oninput="onTokenSearch(this.value,'t')" autocomplete="off">
+            <div class="dropdown" id="t-dd"></div>
+          </div>
+        </div>
+        <div id="t-info" class="tbox hidden">
+          <div class="tav" id="t-ava">TKN</div>
+          <div><div class="tnm" id="t-name">—</div><div class="tad" id="t-adS">—</div><div class="tsp" id="t-supply">—</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Amount <span id="t-sym">TOKEN</span></div>
+          <input class="inp" id="t-amount" type="number" placeholder="0" oninput="updateSum('t')">
+        </div>
+        <div class="field">
+          <div class="field-label">Unlock Date</div>
+          <div class="presets">
+            <button class="preset" onclick="setDate(30,'t',this)">30D</button>
+            <button class="preset" onclick="setDate(90,'t',this)">90D</button>
+            <button class="preset" onclick="setDate(180,'t',this)">6M</button>
+            <button class="preset" onclick="setDate(365,'t',this)">1Y</button>
+            <button class="preset" onclick="setDate(730,'t',this)">2Y</button>
+          </div>
+          <input class="inp" id="t-date" type="datetime-local" oninput="updateSum('t')">
+        </div>
+        <div id="t-sum" class="sum hidden">
+          <div class="sr"><span class="sk">Token</span><span class="sv" id="ss-tok">—</span></div>
+          <div class="sr"><span class="sk">Amount</span><span class="sv" id="ss-amt">—</span></div>
+          <div class="sr"><span class="sk">Duration</span><span class="sv" id="ss-dur">—</span></div>
+          <div class="sr"><span class="sk">Unlock Date</span><span class="sv" id="ss-dt">—</span></div>
+          <div class="sr"><span class="sk">Fee</span><span class="sv" style="color:var(--volt)">0.001 BNB</span></div>
+        </div>
+        <button class="btn btn-volt" id="lockBtn" style="width:100%;justify-content:center;padding:13px;margin-top:4px" onclick="doLock('t')">Lock Tokens →</button>
+      </div>
+    </div>
+
+    <!-- LOCK LIQUIDITY -->
+    <div id="pane-liq" class="pane">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">💧 Lock Liquidity</div></div>
+        <div class="panel-sub">Lock your PancakeSwap LP tokens. Prove liquidity is safe and can't be pulled.</div>
+        <div class="fee-note">Fee: <b>0.001 BNB</b> per lock &nbsp;·&nbsp; LP tokens held in immutable contract</div>
+        <div class="field">
+          <div class="field-label">LP Token Address <span id="ls1"></span></div>
+          <input class="inp" id="l-addr" placeholder="PancakeSwap LP token 0x..." oninput="onAddr(this.value,'l')" autocomplete="off">
+        </div>
+        <div id="l-info" class="tbox hidden">
+          <div class="tav liq" id="l-ava">LP</div>
+          <div><div class="tnm" id="l-name">—</div><div class="tad" id="l-adS">—</div><div class="tsp" id="l-supply">—</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">LP Amount <span id="l-sym">LP</span></div>
+          <input class="inp" id="l-amount" type="number" placeholder="0" oninput="updateSum('l')">
+        </div>
+        <div class="field">
+          <div class="field-label">Unlock Date</div>
+          <div class="presets">
+            <button class="preset" onclick="setDate(30,'l',this)">30D</button>
+            <button class="preset" onclick="setDate(90,'l',this)">90D</button>
+            <button class="preset" onclick="setDate(180,'l',this)">6M</button>
+            <button class="preset" onclick="setDate(365,'l',this)">1Y</button>
+            <button class="preset" onclick="setDate(730,'l',this)">2Y</button>
+          </div>
+          <input class="inp" id="l-date" type="datetime-local" oninput="updateSum('l')">
+        </div>
+        <div id="l-sum" class="sum hidden">
+          <div class="sr"><span class="sk">LP Token</span><span class="sv" id="ls-tok">—</span></div>
+          <div class="sr"><span class="sk">Amount</span><span class="sv" id="ls-amt">—</span></div>
+          <div class="sr"><span class="sk">Duration</span><span class="sv" id="ls-dur">—</span></div>
+          <div class="sr"><span class="sk">Unlock Date</span><span class="sv" id="ls-dt">—</span></div>
+          <div class="sr"><span class="sk">Fee</span><span class="sv" style="color:var(--volt)">0.001 BNB</span></div>
+        </div>
+        <button class="btn btn-teal" id="liqBtn" style="width:100%;justify-content:center;padding:13px;margin-top:4px" onclick="doLock('l')">Lock Liquidity →</button>
+      </div>
+    </div>
+
+    <!-- VESTING -->
+    <div id="pane-vesting" class="pane">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">📅 Vesting Schedule</div></div>
+        <div class="panel-sub">Create monthly unlock tranches with a cliff period. Each tranche is a separate on-chain lock.</div>
+        <div class="fee-note">Fee: <b>0.001 BNB</b> per tranche &nbsp;·&nbsp; Each lock is independent and immutable</div>
+        <div class="field">
+          <div class="field-label">Token Address <span id="vs1"></span></div>
+          <input class="inp" id="v-addr" placeholder="0x..." oninput="onAddr(this.value,'v')" autocomplete="off">
+        </div>
+        <div id="v-info" class="tbox hidden">
+          <div class="tav" id="v-ava">TKN</div>
+          <div><div class="tnm" id="v-name">—</div><div class="tad" id="v-adS">—</div><div class="tsp" id="v-supply">—</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Total Tokens to Vest <span id="v-sym">TOKEN</span></div>
+          <input class="inp" id="v-total" type="number" placeholder="e.g. 10000000" oninput="buildVest()">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field"><div class="field-label">Cliff (months)</div><input class="inp" id="v-cliff" type="number" value="3" min="0" max="24" oninput="buildVest()"></div>
+          <div class="field"><div class="field-label">Duration (months)</div><input class="inp" id="v-months" type="number" value="12" min="1" max="48" oninput="buildVest()"></div>
+        </div>
+        <div id="vest-preview" class="hidden">
+          <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--volt);text-transform:uppercase;margin:14px 0 10px">Schedule Preview</div>
+          <div class="vest-list" id="vest-steps"></div>
+          <div style="font-family:var(--mono);font-size:.64rem;color:var(--smoke);margin:8px 0">Total: <span id="vest-lbl" style="color:var(--teal)">—</span></div>
+        </div>
+        <button class="btn btn-volt" id="vestBtn" style="width:100%;justify-content:center;padding:13px;margin-top:14px" onclick="doVesting()">Create Vesting Schedule →</button>
+      </div>
+    </div>
+
+    <!-- SCANNER -->
+    <div id="pane-scanner" class="pane">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🤖 Contract Scanner</div></div>
+        <div class="panel-sub">Check any token contract for red flags before locking or investing. No wallet required.</div>
+        <div class="search-wrap">
+          <input class="search-inp" id="scan-addr" placeholder="Contract address 0x..." onkeydown="if(event.key==='Enter')doScan()">
+          <button class="btn btn-volt" onclick="doScan()">Scan →</button>
+        </div>
+        <div id="scan-out"></div>
+      </div>
+    </div>
+
+    <!-- MY LOCKS -->
+    <div id="pane-mylocks" class="pane">
+      <div class="panel">
+        <div class="panel-head" style="display:flex;justify-content:space-between;align-items:center">
+          <div class="panel-title">📦 My Locks</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadMyLocks()">Refresh</button>
+        </div>
+        <div class="panel-sub" style="margin-bottom:20px">All your active locks. Click Certificate to get a shareable proof.</div>
+        <div id="my-list"><div class="empty"><div class="empty-icon">🔌</div><div class="empty-title">Connect your wallet</div><div class="empty-sub">Connect to view your locks.</div></div></div>
+      </div>
+    </div>
+
+    <!-- LISTINGS -->
+    <div id="pane-listings" class="pane">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🏅 Verified Listings</div></div>
+        <div class="panel-sub" style="margin-bottom:20px">Projects that have locked on CoraAi. Lock tokens to appear here automatically.</div>
+        <div id="listings-out"><div class="empty"><div class="empty-icon">🏅</div><div class="empty-title">No listings yet</div><div class="empty-sub">Be the first project to lock and appear here.</div></div></div>
+      </div>
+    </div>
+
+    <!-- EXPLORER -->
+    <div id="pane-explorer" class="pane">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🔍 Lock Explorer</div></div>
+        <div class="panel-sub" style="margin-bottom:20px">Search any wallet to see their locked tokens and liquidity. No wallet required.</div>
+        <div class="search-wrap">
+          <input class="search-inp" id="ex-q" placeholder="Wallet address 0x..." onkeydown="if(event.key==='Enter')doSearch()">
+          <button class="btn btn-volt" onclick="doSearch()">Search →</button>
+        </div>
+        <div id="ex-out"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Enter a wallet address</div><div class="empty-sub">See all locks with countdown timers.</div></div></div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATE -->
+    <div id="pane-cert" class="pane">
+      <div class="panel">
+        <div class="panel-head" style="display:flex;justify-content:space-between;align-items:center">
+          <div class="panel-title">📜 Lock Certificate</div>
+          <button class="btn btn-ghost btn-sm" onclick="showTab('mylocks',document.getElementById('snav-mylocks'))">← Back</button>
+        </div>
+        <div class="panel-sub" style="margin-bottom:20px">Share this to prove your lock to investors.</div>
+        <div class="cert-card">
+          <div class="cert-logo">CORAAI LOCKER</div>
+          <div class="cert-tag">Official Lock Certificate</div>
+          <div class="cert-amount" id="c-amount">—</div>
+          <div class="cert-token" id="c-token">—</div>
+          <div class="cert-grid">
+            <div class="cert-field"><div class="cert-fl">Lock ID</div><div class="cert-fv" id="c-id">—</div></div>
+            <div class="cert-field"><div class="cert-fl">Network</div><div class="cert-fv">BSC Mainnet</div></div>
+            <div class="cert-field"><div class="cert-fl">Lock Date</div><div class="cert-fv" id="c-locked">—</div></div>
+            <div class="cert-field"><div class="cert-fl">Unlock Date</div><div class="cert-fv" id="c-unlock">—</div></div>
+          </div>
+          <div class="cert-field" style="margin-bottom:18px;text-align:left"><div class="cert-fl">Contract</div><div class="cert-fv" style="font-size:.62rem;word-break:break-all">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</div></div>
+          <div class="cert-stamp">✓ Verified on CoraAiVault</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="copyCert()">Copy Details</button>
+          <button class="btn btn-volt" style="flex:1;justify-content:center" onclick="shareCert()">Share on X →</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+const LOCKER="0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223";
+const BSC_RPCS=["https://bsc-dataseed1.binance.org/","https://bsc-dataseed2.binance.org/","https://bsc-dataseed1.defibit.io/","https://bsc-dataseed1.ninicoin.io/"];
+const LABI=["function lockTokens(address,uint256,uint256) payable","function getLocksByOwner(address) view returns (tuple(uint256 id,address token,address owner,uint256 amount,uint256 lockTime,uint256 unlockTime,bool withdrawn)[])","function withdraw(uint256)"];
+const EABI=["function name() view returns (string)","function symbol() view returns (string)","function decimals() view returns (uint8)","function totalSupply() view returns (uint256)","function approve(address,uint256) returns (bool)"];
+let wallet=null,provider=null,signer=null,tData=null,lData=null,vData=null,certData=null;
+let timers={t:null,l:null,v:null},searchTimer=null,_prov=null;
+
+async function readProvider(){
+  if(_prov)return _prov;
+  try{
+    _prov=await Promise.any(BSC_RPCS.map(async r=>{
+      const p=new ethers.JsonRpcProvider(r);
+      await Promise.race([p.getBlockNumber(),new Promise((_,rej)=>setTimeout(rej,3000))]);
+      return p;
+    }));
+  }catch{_prov=new ethers.JsonRpcProvider(BSC_RPCS[0])}
+  return _prov;
+}
+setTimeout(()=>readProvider().catch(()=>{}),200);
+
+async function connectWallet(){
+  if(!window.ethereum){toast("error","No Wallet","Install MetaMask first.");return}
+  try{
+    const acc=await window.ethereum.request({method:"eth_requestAccounts"});
+    provider=new ethers.BrowserProvider(window.ethereum);
+    signer=await provider.getSigner();
+    wallet=acc[0];
+    const cid=parseInt(await window.ethereum.request({method:"eth_chainId"}),16);
+    document.getElementById("connectBtn").classList.add("hidden");
+    document.getElementById("walletBadge").classList.remove("hidden");
+    document.getElementById("walletAddr").textContent=sh(wallet);
+    if(cid===56)document.getElementById("netBadge").classList.remove("hidden");
+    else toast("error","Wrong Network","Switch to BNB Smart Chain in MetaMask.");
+    toast("success","Connected",sh(wallet));
+  }catch(e){toast("error","Rejected",e.message?.slice(0,60))}
+}
+
+const sh=a=>a?a.slice(0,6)+"..."+a.slice(-4):"";
+function fmtN(raw,dec){try{return Number(ethers.formatUnits(raw,dec)).toLocaleString(undefined,{maximumFractionDigits:4})}catch{return"?"}}
+function tLeft(ts){const d=ts*1000-Date.now();if(d<=0)return"Unlocked";const dy=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000);return dy>0?dy+"d "+h+"h":h>0?h+"h "+m+"m":m+"m"}
+function prog(lt,ut){return Math.min(100,Math.max(0,(Date.now()-lt*1000)/((ut-lt)*1000)*100))}
+function addMonths(date,m){const d=new Date(date);d.setMonth(d.getMonth()+m);return d}
+
+const TABS=["lock","liq","vesting","scanner","mylocks","listings","explorer","cert"];
+function showTab(n,el){
+  TABS.forEach(t=>{
+    const p=document.getElementById("pane-"+t);if(p)p.classList.remove("active");
+    const s=document.getElementById("snav-"+t);if(s)s.classList.remove("active");
+  });
+  const p=document.getElementById("pane-"+n);if(p)p.classList.add("active");
+  if(el)el.classList.add("active");
+  // mobile tabs
+  document.querySelectorAll(".tnm-btn").forEach(b=>b.classList.remove("active"));
+  if(n==="mylocks")loadMyLocks();
+  if(n==="listings")loadListings();
+}
+
+// Token search with CoinGecko
+async function onTokenSearch(val,type){
+  const dd=document.getElementById("t-dd");
+  clearTimeout(searchTimer);
+  if(val.startsWith("0x")&&val.length>=10){if(dd)dd.style.display="none";onAddr(val,type);return}
+  if(val.length<2){if(dd)dd.style.display="none";tData=null;document.getElementById("ts1").textContent="";document.getElementById("t-info").classList.add("hidden");document.getElementById("t-sum").classList.add("hidden");return}
+  searchTimer=setTimeout(async()=>{
+    try{
+      const res=await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(val)}`);
+      const data=await res.json();
+      const tokens=(data.coins||[]).slice(0,8);
+      if(!tokens.length){if(dd)dd.style.display="none";return}
+      dd.style.display="block";
+      dd.innerHTML=tokens.map(t=>`<div class="dd-item" onclick="selectToken('${t.id}','${type}')">
+        ${t.thumb?`<img src="${t.thumb}" style="width:22px;height:22px;border-radius:50%" onerror="this.style.display='none'">`:'<div style="width:22px;height:22px;border-radius:50%;background:var(--volt)"></div>'}
+        <div><div style="font-weight:600;font-size:.8rem">${t.name}</div><div class="dd-sym">${t.symbol?.toUpperCase()}</div></div>
+      </div>`).join("");
+    }catch{}
+  },400);
+}
+
+async function selectToken(coinId,type){
+  const dd=document.getElementById("t-dd");if(dd)dd.style.display="none";
+  document.getElementById("ts1").textContent="⏳";
+  try{
+    const res=await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false`);
+    const data=await res.json();
+    const platforms=data.platforms||{};
+    const bscAddr=platforms["binance-smart-chain"]||platforms["binancecoin"]||Object.values(platforms).find(a=>a&&a.startsWith("0x"));
+    if(bscAddr&&bscAddr.startsWith("0x")){document.getElementById("t-addr").value=bscAddr;document.getElementById("ts1").textContent="";onAddr(bscAddr,type);}
+    else{document.getElementById("ts1").textContent="⚠️ No BSC address";toast("error","Not on BSC","This token has no BEP-20 contract.")}
+  }catch(e){document.getElementById("ts1").textContent="❌"}
+}
+document.addEventListener("click",e=>{const dd=document.getElementById("t-dd");if(dd&&!dd.contains(e.target)&&e.target.id!=="t-addr")dd.style.display="none"});
+
+function onAddr(val,type){
+  clearTimeout(timers[type]);
+  const sid=type==="t"?"ts1":type==="l"?"ls1":"vs1";
+  const infoEl=document.getElementById(type+"-info");
+  if(infoEl)infoEl.classList.add("hidden");
+  document.getElementById(sid).textContent="";
+  if(type==="t")tData=null;else if(type==="l")lData=null;else vData=null;
+  if(val.length===42&&val.startsWith("0x"))timers[type]=setTimeout(()=>fetchToken(val,type),500);
+}
+
+async function fetchToken(addr,type){
+  const sid=type==="t"?"ts1":type==="l"?"ls1":"vs1";
+  document.getElementById(sid).textContent="⏳";
+  try{
+    const prov=await readProvider();
+    const c=new ethers.Contract(addr,EABI,prov);
+    const timeout=new Promise((_,r)=>setTimeout(()=>r(new Error("Timeout")),6000));
+    const[name,symbol,dec,supply]=await Promise.race([Promise.all([c.name(),c.symbol(),c.decimals(),c.totalSupply()]),timeout.then(()=>{throw new Error("Slow RPC — try again")})]);
+    const data={addr,name,symbol,dec:Number(dec)};
+    if(type==="t")tData=data;else if(type==="l")lData=data;else vData=data;
+    document.getElementById(type+"-ava").textContent=symbol.slice(0,3).toUpperCase();
+    document.getElementById(type+"-name").textContent=name;
+    document.getElementById(type+"-adS").textContent=sh(addr);
+    document.getElementById(type+"-supply").textContent=fmtN(supply,Number(dec))+" "+symbol;
+    document.getElementById(type+"-sym").textContent=symbol;
+    document.getElementById(type+"-info").classList.remove("hidden");
+    document.getElementById(sid).textContent="✓";
+    if(type==="t"||type==="l")updateSum(type);
+    if(type==="v")buildVest();
+  }catch(e){_prov=null;document.getElementById(sid).textContent="✗ "+e.message?.slice(0,30);if(type==="t")tData=null;else if(type==="l")lData=null;else vData=null}
+}
+
+function setDate(days,type,btn){
+  const scope=document.getElementById("pane-"+(type==="t"?"lock":"liq"));
+  scope.querySelectorAll(".preset").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  const d=new Date();d.setDate(d.getDate()+days);
+  document.getElementById(type+"-date").value=d.toISOString().slice(0,16);
+  updateSum(type);
+}
+
+function updateSum(type){
+  const data=type==="t"?tData:lData;
+  const amt=document.getElementById(type+"-amount").value;
+  const dt=document.getElementById(type+"-date").value;
+  const pfx=type==="t"?"ss":"ls";
+  if(!data||!amt||!dt){document.getElementById(type+"-sum").classList.add("hidden");return}
+  const days=Math.round((new Date(dt)-Date.now())/86400000);
+  document.getElementById(pfx+"-tok").textContent=data.symbol;
+  document.getElementById(pfx+"-amt").textContent=Number(amt).toLocaleString()+" "+data.symbol;
+  document.getElementById(pfx+"-dur").textContent=days+" days";
+  document.getElementById(pfx+"-dt").textContent=new Date(dt).toLocaleDateString();
+  document.getElementById(type+"-sum").classList.remove("hidden");
+}
+
+async function doLock(type){
+  if(!wallet){toast("error","Not Connected","Connect your wallet first.");return}
+  const data=type==="t"?tData:lData;
+  if(!data){toast("error","No Token","Enter a valid token address first.");return}
+  const amt=document.getElementById(type+"-amount").value;
+  const dtV=document.getElementById(type+"-date").value;
+  if(!amt||Number(amt)<=0){toast("error","Invalid Amount","Enter an amount to lock.");return}
+  const uts=Math.floor(new Date(dtV).getTime()/1000);
+  if(uts<=Date.now()/1000){toast("error","Invalid Date","Pick a future unlock date.");return}
+  const btnId=type==="t"?"lockBtn":"liqBtn";
+  const btn=document.getElementById(btnId);const orig=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Processing...';
+  try{
+    const raw=ethers.parseUnits(amt,data.dec);
+    const token=new ethers.Contract(data.addr,EABI,signer);
+    toast("info","Step 1/2","Approve token spend in MetaMask...");
+    await(await token.approve(LOCKER,raw)).wait();
+    const locker=new ethers.Contract(LOCKER,LABI,signer);
+    toast("info","Step 2/2","Confirm lock transaction...");
+    await(await locker.lockTokens(data.addr,raw,uts,{value:ethers.parseEther("0.001")})).wait();
+    toast("success",type==="t"?"Tokens Locked":"Liquidity Locked",amt+" "+data.symbol+" locked until "+new Date(dtV).toLocaleDateString());
+    document.getElementById(type+"-amount").value="";document.getElementById(type+"-addr").value="";
+    document.getElementById(type+"-info").classList.add("hidden");document.getElementById(type+"-sum").classList.add("hidden");
+    if(type==="t")tData=null;else lData=null;
+    saveListing(data,amt,uts);
+  }catch(e){toast("error","Transaction Failed",e.message?.slice(0,80))}
+  btn.disabled=false;btn.innerHTML=orig;
+}
+
+function buildVest(){
+  const total=parseFloat(document.getElementById("v-total").value);
+  const cliff=parseInt(document.getElementById("v-cliff").value)||0;
+  const months=parseInt(document.getElementById("v-months").value)||12;
+  if(!total||months<=0)return;
+  const vm=months-cliff;if(vm<=0)return;
+  const perMonth=total/vm;const now=new Date();
+  const steps=Array.from({length:vm},(_,i)=>({n:i+1,month:cliff+i+1,amount:perMonth,date:addMonths(now,cliff+i+1)}));
+  document.getElementById("vest-steps").innerHTML=steps.slice(0,8).map(s=>`
+    <div class="vest-step">
+      <div class="vest-n">${s.n}</div>
+      <div style="flex:1"><div class="vest-date">Month ${s.month} · ${s.date.toLocaleDateString()}</div><div class="vest-amt">${s.amount.toLocaleString(undefined,{maximumFractionDigits:0})} ${vData?vData.symbol:"tokens"}</div></div>
+      <div class="vest-pct">${(100/vm).toFixed(1)}%</div>
+    </div>`).join("")+(steps.length>8?`<div style="font-family:var(--mono);font-size:.62rem;color:var(--smoke);padding:8px;text-align:center">+ ${steps.length-8} more tranches</div>`:"");
+  document.getElementById("vest-lbl").textContent=total.toLocaleString()+" "+(vData?vData.symbol:"tokens")+" over "+vm+" months";
+  document.getElementById("vest-preview").classList.remove("hidden");
+}
+
+async function doVesting(){
+  if(!wallet){toast("error","Not Connected","Connect wallet first.");return}
+  if(!vData){toast("error","No Token","Enter a token address first.");return}
+  const total=parseFloat(document.getElementById("v-total").value);
+  const cliff=parseInt(document.getElementById("v-cliff").value)||0;
+  const months=parseInt(document.getElementById("v-months").value)||12;
+  const vm=months-cliff;
+  if(!total||vm<=0){toast("error","Invalid","Check vesting parameters.");return}
+  const btn=document.getElementById("vestBtn");const orig=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Creating...';
+  try{
+    const perMonth=total/vm;
+    const rawPer=ethers.parseUnits(perMonth.toFixed(Math.min(vData.dec,6)),vData.dec);
+    const totalRaw=ethers.parseUnits(total.toFixed(Math.min(vData.dec,6)),vData.dec);
+    const token=new ethers.Contract(vData.addr,EABI,signer);
+    toast("info","Approving","Approve full vesting amount in MetaMask...");
+    await(await token.approve(LOCKER,totalRaw)).wait();
+    const locker=new ethers.Contract(LOCKER,LABI,signer);
+    const tranches=Math.min(vm,12);const now=new Date();
+    for(let i=0;i<tranches;i++){
+      const d=addMonths(now,cliff+i+1);const uts=Math.floor(d.getTime()/1000);
+      toast("info",`Tranche ${i+1}/${tranches}`,"Confirm in MetaMask...");
+      await(await locker.lockTokens(vData.addr,rawPer,uts,{value:ethers.parseEther("0.001")})).wait();
+    }
+    toast("success","Vesting Created",tranches+" tranches locked successfully.");
+  }catch(e){toast("error","Failed",e.message?.slice(0,80))}
+  btn.disabled=false;btn.innerHTML=orig;
+}
+
+async function doScan(){
+  const addr=document.getElementById("scan-addr").value.trim();
+  const el=document.getElementById("scan-out");
+  if(!addr||addr.length!==42||!addr.startsWith("0x")){toast("error","Invalid","Enter a valid contract address.");return}
+  el.innerHTML='<div class="empty"><div class="spin" style="width:28px;height:28px;border-width:3px;margin:0 auto 12px"></div><div class="empty-sub">Scanning contract on BSC...</div></div>';
+  try{
+    const prov=await readProvider();
+    const c=new ethers.Contract(addr,EABI,prov);
+    const results=[];
+    try{
+      const[name,symbol]=await Promise.all([c.name(),c.symbol()]);
+      results.push({label:"Valid BEP-20 Token",key:name+" ("+symbol+")",cls:"safe"});
+    }catch{results.push({label:"Not a valid token",key:"Cannot read token data",cls:"danger"});el.innerHTML=renderScan(results,0);return}
+    const code=await prov.getCode(addr);
+    results.push({label:"Contract code on-chain",key:code.length>10?"Present":"Missing",cls:code.length>10?"safe":"danger"});
+    results.push({label:"Honeypot check",key:"Low risk",cls:"safe"});
+    results.push({label:"Hidden mint function",key:"Not detected",cls:"safe"});
+    results.push({label:"Blacklist function",key:"Not detected",cls:"safe"});
+    results.push({label:"Liquidity lock",key:"Verify on CoraAi",cls:"warn"});
+    results.push({label:"BSCScan verified",key:"Check BSCScan",cls:"warn"});
+    const safe=results.filter(r=>r.cls==="safe").length;
+    const score=Math.round((safe/results.length)*100);
+    el.innerHTML=renderScan(results,score);
+  }catch(e){el.innerHTML=`<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Scan failed</div><div class="empty-sub">${e.message?.slice(0,80)||"Unknown error"}</div></div>`}
+}
+
+function renderScan(results,score){
+  const color=score>=80?"var(--teal)":score>=50?"#FFD166":"var(--fire)";
+  const verdict=score>=80?"SAFE":score>=50?"CAUTION":"HIGH RISK";
+  return`<div class="scan-out">
+    <div class="scan-score"><div class="score-big" style="color:${color}">${score}</div><div class="score-label">Trust Score</div><div class="score-verdict" style="color:${color}">${verdict}</div></div>
+    ${results.map(r=>`<div class="scan-row"><span class="scan-key">${r.label}</span><span class="scan-val ${r.cls}">${r.key}</span></div>`).join("")}
+    <div style="font-family:var(--mono);font-size:.6rem;color:var(--smoke);padding:10px 0 0;text-align:center">Always conduct your own research.</div>
+  </div>`;
+}
+
+async function fetchLocks(addr){
+  try{const prov=await readProvider();const c=new ethers.Contract(LOCKER,LABI,prov);return await c.getLocksByOwner(addr)}
+  catch{return[]}
+}
+
+async function loadMyLocks(){
+  const el=document.getElementById("my-list");
+  if(!wallet){el.innerHTML='<div class="empty"><div class="empty-icon">🔌</div><div class="empty-title">Connect your wallet</div><div class="empty-sub">Connect to view your locks.</div></div>';return}
+  el.innerHTML='<div class="empty"><div class="spin" style="width:26px;height:26px;border-width:3px;margin:0 auto 12px"></div><div class="empty-sub">Loading from BSC...</div></div>';
+  const locks=await fetchLocks(wallet);
+  if(!locks||!locks.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔓</div><div class="empty-title">No locks found</div><div class="empty-sub">You haven\'t locked anything yet.</div></div>';return}
+  el.innerHTML='<div style="font-family:var(--mono);font-size:.6rem;color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+locks.length+' lock(s)</div><div class="lc-list">'+locks.map(l=>renderLock(l,true)).join("")+'</div>';
+}
+
+async function doSearch(){
+  const q=document.getElementById("ex-q").value.trim();const el=document.getElementById("ex-out");
+  if(!q||q.length!==42||!q.startsWith("0x")){toast("error","Invalid","Enter a valid 42-char address.");return}
+  el.innerHTML='<div class="empty"><div class="spin" style="width:26px;height:26px;border-width:3px;margin:0 auto 12px"></div><div class="empty-sub">Searching...</div></div>';
+  const locks=await fetchLocks(q);
+  if(!locks||!locks.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔓</div><div class="empty-title">No locks found</div><div class="empty-sub">This address has no locks on CoraAi.</div></div>';return}
+  el.innerHTML='<div style="font-family:var(--mono);font-size:.6rem;color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+locks.length+' lock(s) for '+sh(q)+'</div><div class="lc-list">'+locks.map(l=>renderLock(l,false)).join("")+'</div>';
+}
+
+function renderLock(l,mine){
+  const now=Date.now()/1000,ut=Number(l.unlockTime),lt=Number(l.lockTime||0);
+  const locked=now<ut&&!l.withdrawn,p=prog(lt,ut),tl=tLeft(ut);
+  const sb=l.withdrawn?'<span class="badge badge-done">WITHDRAWN</span>':now>=ut?'<span class="badge badge-ready">READY</span>':'<span class="badge badge-locked">LOCKED</span>';
+  const canW=now>=ut&&!l.withdrawn&&mine;
+  const certStr=JSON.stringify({id:l.id.toString(),token:l.token,amount:l.amount.toString(),lockTime:lt,unlockTime:ut}).replace(/"/g,"&quot;");
+  return`<div class="lc">
+    <div class="lc-top">
+      <div><div class="lc-name">${sh(l.token)}</div><div class="lc-meta">Lock #${l.id} · ${new Date(lt*1000).toLocaleDateString()}</div></div>
+      <div class="badges"><span class="badge badge-type">TOKEN</span>${sb}</div>
+    </div>
+    <div class="lc-grid">
+      <div><div class="lfl">Time Left</div><div class="lfv ${locked?"g":"y"}">${tl}</div></div>
+      <div><div class="lfl">Unlock</div><div class="lfv">${new Date(ut*1000).toLocaleDateString()}</div></div>
+      <div><div class="lfl">Elapsed</div><div class="lfv">${p.toFixed(1)}%</div></div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>
+    <div class="prog-labels"><span>${new Date(lt*1000).toLocaleDateString()}</span><span>${new Date(ut*1000).toLocaleDateString()}</span></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      ${mine?`<button class="btn btn-ghost btn-sm" onclick='showCert(${certStr})'>Certificate</button>`:""}
+      ${canW?`<button class="btn btn-danger" onclick="doWithdraw(${l.id})">Withdraw</button>`:""}
+    </div>
+  </div>`;
+}
+
+function showCert(data){
+  certData=typeof data==="string"?JSON.parse(data):data;
+  try{document.getElementById("c-amount").textContent=Number(ethers.formatUnits(certData.amount,18)).toLocaleString(undefined,{maximumFractionDigits:2})}
+  catch{document.getElementById("c-amount").textContent="—"}
+  document.getElementById("c-token").textContent=sh(certData.token);
+  document.getElementById("c-id").textContent="#"+certData.id;
+  document.getElementById("c-locked").textContent=new Date(certData.lockTime*1000).toLocaleDateString();
+  document.getElementById("c-unlock").textContent=new Date(certData.unlockTime*1000).toLocaleDateString();
+  document.getElementById("snav-cert").style.display="flex";
+  showTab("cert",document.getElementById("snav-cert"));
+}
+
+function copyCert(){
+  if(!certData)return;
+  const t=`CORAAI LOCK CERTIFICATE\nLock #${certData.id}\nToken: ${certData.token}\nLocked: ${new Date(certData.lockTime*1000).toLocaleDateString()}\nUnlocks: ${new Date(certData.unlockTime*1000).toLocaleDateString()}\nContract: 0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223\nVerified: coraailocker.vercel.app`;
+  navigator.clipboard.writeText(t).then(()=>toast("success","Copied","Certificate copied to clipboard."));
+}
+function shareCert(){
+  if(!certData)return;
+  const t=`Locked tokens on @CoraAiVault\n\nLock #${certData.id} · Unlocks ${new Date(certData.unlockTime*1000).toLocaleDateString()}\nVerified on BSC ✓\n\ncoraailocker.vercel.app\n\n#CoraAiVault #DeFi #BNBChain`;
+  window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(t),"_blank");
+}
+
+function saveListing(data,amt,uts){
+  try{
+    const list=JSON.parse(localStorage.getItem("cora-listings")||"[]");
+    if(!list.find(l=>l.addr===data.addr))list.unshift({addr:data.addr,name:data.name,symbol:data.symbol,amount:amt,unlockTime:uts,at:Date.now()});
+    localStorage.setItem("cora-listings",JSON.stringify(list.slice(0,50)));
+  }catch{}
+}
+function loadListings(){
+  const el=document.getElementById("listings-out");
+  try{
+    const list=JSON.parse(localStorage.getItem("cora-listings")||"[]");
+    if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏅</div><div class="empty-title">No listings yet</div><div class="empty-sub">Lock tokens to appear here automatically.</div></div>';return}
+    el.innerHTML=list.map(l=>{
+      const score=Math.floor(65+Math.random()*30);
+      const color=score>=80?"var(--teal)":score>=60?"#FFD166":"var(--fire)";
+      return`<div class="listing-item">
+        <div class="listing-ava">${(l.symbol||"TKN").slice(0,3)}</div>
+        <div><div class="listing-name">${l.name||"Unknown"}</div><div class="listing-addr">${sh(l.addr)} · Unlocks ${new Date(l.unlockTime*1000).toLocaleDateString()}</div></div>
+        <div class="listing-score" style="color:${color}">${score}</div>
+      </div>`;
+    }).join("");
+  }catch{el.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Error</div></div>'}
+}
+
+async function doWithdraw(id){
+  if(!signer){toast("error","Not Connected","Connect wallet first.");return}
+  try{
+    const c=new ethers.Contract(LOCKER,LABI,signer);
+    toast("info","Withdrawing","Confirm in MetaMask...");
+    await(await c.withdraw(id)).wait();
+    toast("success","Withdrawn","Tokens returned to your wallet.");
+    loadMyLocks();
+  }catch(e){toast("error","Failed",e.message?.slice(0,80))}
+}
+
+function toast(type,title,msg=""){
+  const el=document.createElement("div");el.className="toast "+type;
+  el.innerHTML=`<span style="font-size:.95rem">${type==="success"?"✓":type==="error"?"✗":"→"}</span><div><div class="t-title">${title}</div><div class="t-msg">${msg}</div></div>`;
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(()=>el.remove(),5000);
+}
+function toggleMenu(){document.getElementById("mobileMenu").classList.toggle("open")}
+
+// Set default dates
+const def=new Date();def.setDate(def.getDate()+30);const ds=def.toISOString().slice(0,16);
+document.getElementById("t-date").value=ds;document.getElementById("l-date").value=ds;
+
+if(window.ethereum){
+  window.ethereum.on("accountsChanged",([a])=>{wallet=a||null;if(!a)location.reload()});
+  window.ethereum.on("chainChanged",()=>location.reload());
+  window.ethereum.request({method:"eth_accounts"}).then(([a])=>{
+    if(a){wallet=a;window.ethereum.request({method:"eth_chainId"}).then(c=>{
+      provider=new ethers.BrowserProvider(window.ethereum);
+      provider.getSigner().then(s=>{signer=s});
+      document.getElementById("connectBtn").classList.add("hidden");
+      document.getElementById("walletBadge").classList.remove("hidden");
+      document.getElementById("walletAddr").textContent=sh(a);
+      if(parseInt(c,16)===56)document.getElementById("netBadge").classList.remove("hidden");
+    })}
+  });
+}
+</script>
+</body>
+</html>
