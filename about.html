@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — CoraAiVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--volt2:#A8D900;--lav:#7B6FE8;--teal:#00D4AA;--fire:#FF5733;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;opacity:.018;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.btn{font-family:var(--body);font-weight:700;font-size:.78rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:8px;transition:all .18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+.btn-volt{background:var(--volt);color:var(--ink);padding:9px 20px}.btn-volt:hover{background:var(--volt2);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--smoke);border:1px solid var(--line2);padding:9px 20px}.btn-ghost:hover{border-color:var(--mist);color:var(--white)}
+.btn-lg{padding:14px 32px;font-size:.86rem;border-radius:10px}
+.btn-sm{padding:7px 14px;font-size:.7rem;border-radius:7px}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.85);position:sticky;top:0;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-mark{width:32px;height:32px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.nav-mark svg{width:18px;height:18px}
+.nav-wordmark{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:var(--white)}
+.nav-wordmark em{color:var(--volt);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nav-link:hover,.nav-link.active{color:var(--white);background:rgba(255,255,255,.06)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:2px;background:var(--white);border-radius:1px}
+.mobile-menu{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-link{font-family:var(--display);font-size:2.2rem;letter-spacing:.06em;color:var(--smoke);text-decoration:none}
+.mobile-link:hover{color:var(--volt)}
+
+/* PAGE HERO */
+.page-hero{padding:80px 60px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.page-hero::after{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,.05),transparent 70%);pointer-events:none}
+.eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--volt)}
+.page-title{font-family:var(--display);font-size:clamp(3rem,8vw,7rem);letter-spacing:.02em;line-height:.92;margin-bottom:20px}
+.page-sub{font-size:.95rem;color:var(--smoke);max-width:520px;line-height:1.8}
+
+/* SECTIONS */
+.section{padding:80px 60px;border-bottom:1px solid var(--line)}
+.sec-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-tag::before{content:'';width:16px;height:1px;background:var(--volt)}
+.sec-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);letter-spacing:.03em;line-height:.95;margin-bottom:24px}
+.prose{font-size:.88rem;color:var(--smoke);line-height:1.85;max-width:680px;margin-bottom:18px}
+.prose strong{color:var(--white)}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.two-col-wide{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center}
+
+/* STAT BLOCKS */
+.stat-blocks{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+.stat-block{background:var(--ink2);padding:32px;transition:background .2s}
+.stat-block:hover{background:var(--ink3)}
+.sb-num{font-family:var(--display);font-size:3rem;letter-spacing:.04em;color:var(--volt);line-height:1;margin-bottom:6px}
+.sb-label{font-size:.7rem;font-family:var(--mono);color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.sb-desc{font-size:.78rem;color:var(--mist);line-height:1.65}
+
+/* VALUES */
+.values{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);margin-top:48px}
+.value{background:var(--ink2);padding:36px 30px;transition:background .2s}
+.value:hover{background:var(--ink3)}
+.val-num{font-family:var(--display);font-size:2rem;color:var(--volt);margin-bottom:10px}
+.val-title{font-weight:800;font-size:.94rem;margin-bottom:10px}
+.val-desc{font-size:.78rem;color:var(--smoke);line-height:1.7}
+
+/* TECH STACK */
+.tech-list{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.tech-item{display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--ink2);border:1px solid var(--line);border-radius:10px;transition:border-color .2s}
+.tech-item:hover{border-color:var(--line2)}
+.tech-name{font-weight:700;font-size:.84rem;flex:1}
+.tech-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--volt);text-transform:uppercase;padding:3px 8px;background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.15);border-radius:4px}
+.tech-desc{font-size:.74rem;color:var(--smoke)}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:24px;margin-top:36px}
+.timeline::before{content:'';position:absolute;left:0;top:6px;bottom:0;width:1px;background:linear-gradient(180deg,var(--volt),var(--teal) 50%,var(--line))}
+.tl-item{position:relative;margin-bottom:32px}
+.tl-item::before{content:'';position:absolute;left:-28px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--ink);border:1px solid var(--line2)}
+.tl-item.done::before{background:var(--volt);border-color:var(--volt);box-shadow:0 0 8px var(--volt)}
+.tl-item.current::before{background:var(--teal);border-color:var(--teal);box-shadow:0 0 8px var(--teal);animation:pd 2s infinite}
+@keyframes pd{0%,100%{box-shadow:0 0 6px var(--teal)}50%{box-shadow:0 0 16px var(--teal)}}
+.tl-date{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--smoke);text-transform:uppercase;margin-bottom:4px}
+.tl-title{font-weight:700;font-size:.88rem;margin-bottom:4px}
+.tl-desc{font-size:.76rem;color:var(--smoke);line-height:1.6}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:2px;background:var(--line);margin-top:36px}
+.faq-item{background:var(--ink2);transition:background .2s}
+.faq-item:hover{background:var(--ink3)}
+.faq-q{padding:20px 24px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.88rem}
+.faq-icon{font-family:var(--mono);font-size:1.2rem;color:var(--volt);transition:transform .2s;flex-shrink:0}
+.faq-a{display:none;padding:0 24px 20px;font-size:.8rem;color:var(--smoke);line-height:1.75}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+
+/* CTA */
+.cta-section{padding:80px 60px;text-align:center}
+.cta-title{font-family:var(--display);font-size:clamp(2.5rem,6vw,5rem);letter-spacing:.03em;line-height:.95;margin-bottom:20px}
+.cta-title em{color:var(--volt);font-style:normal}
+.cta-sub{font-size:.9rem;color:var(--smoke);max-width:420px;margin:0 auto 36px;line-height:1.75}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--line);padding:56px 60px 40px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand{font-family:var(--display);font-size:1.5rem;letter-spacing:.06em}
+.footer-brand em{color:var(--volt);font-style:normal}
+.footer-brand p{font-family:var(--body);font-size:.8rem;color:var(--smoke);line-height:1.7;max-width:220px;margin-top:12px;font-style:normal}
+.footer-col h4{font-size:.62rem;font-family:var(--mono);letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:14px}
+.footer-col a{display:block;font-size:.8rem;color:var(--mist);text-decoration:none;margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:var(--volt)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--line);font-size:.72rem;color:var(--smoke)}
+.footer-contract{font-family:var(--mono);font-size:.6rem;padding:5px 12px;background:var(--ink3);border:1px solid var(--line);border-radius:6px}
+
+@media(max-width:860px){
+  .nav{padding:0 20px}.nav-links{display:none}.hamburger{display:flex}
+  .page-hero,.section,.cta-section{padding:56px 20px}
+  .two-col,.two-col-wide{grid-template-columns:1fr}
+  .stat-blocks{grid-template-columns:1fr}
+  .values{grid-template-columns:1fr}
+  .footer{padding:40px 20px 32px}.footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <span class="nav-wordmark">CORA<em>AI</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="app.html" class="nav-link">Locker</a>
+    <a href="whitepaper.html" class="nav-link">Whitepaper</a>
+    <a href="about.html" class="nav-link active">About</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="app.html" class="btn btn-volt btn-sm">Launch App →</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="mobile-link" onclick="toggleMenu()">Home</a>
+  <a href="app.html" class="mobile-link" onclick="toggleMenu()">Locker</a>
+  <a href="whitepaper.html" class="mobile-link" onclick="toggleMenu()">Whitepaper</a>
+  <a href="about.html" class="mobile-link" onclick="toggleMenu()">About</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="eyebrow">About CoraAiVault</div>
+  <h1 class="page-title">Built to fix<br>a broken<br>system.</h1>
+  <p class="page-sub">Every week, crypto investors lose money to projects that promised to lock their tokens and didn't. CoraAiVault makes those promises unnecessary — the contract does it instead.</p>
+</div>
+
+<!-- THE STORY -->
+<section class="section">
+  <div class="two-col-wide">
+    <div>
+      <div class="sec-tag">The story</div>
+      <h2 class="sec-title">Why we built this.</h2>
+      <p class="prose">The problem with DeFi isn't the technology. The technology works. The problem is that nothing forces projects to follow through on their commitments. A team can say their tokens are locked. There's nothing stopping them from saying it and lying.</p>
+      <p class="prose">CoraAiVault started with a simple question: <strong>what if the lock itself was the proof?</strong> Not a screenshot. Not a promise. An actual smart contract holding the tokens, on a public blockchain, where anyone can verify it in ten seconds.</p>
+      <p class="prose">We built the simplest version of that first. Token locking. LP locking. A public explorer. Then we added the scanner, the vesting engine, the certificates. Each feature answers a real question investors ask before they buy into a project.</p>
+      <p class="prose"><strong>We're not trying to be everything in DeFi.</strong> We're trying to be the trust layer — the thing every project uses to prove they're serious, and every investor checks to know they're safe.</p>
+    </div>
+    <div class="stat-blocks">
+      <div class="stat-block">
+        <div class="sb-num">$0</div>
+        <div class="sb-label">Rugged through CoraAi</div>
+        <div class="sb-desc">No locked funds have ever been accessed by anyone other than the original locker. The contract enforces this permanently.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-num">0</div>
+        <div class="sb-label">Admin keys to user funds</div>
+        <div class="sb-desc">The contract owner address can collect platform fees. That's all. Locked tokens are completely outside our reach.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-num">BSC</div>
+        <div class="sb-label">Live mainnet</div>
+        <div class="sb-desc">Deployed and operational on BNB Smart Chain Mainnet. Real tokens. Real BNB. Real blockchain records.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-num">5B</div>
+        <div class="sb-label">$CORA total supply</div>
+        <div class="sb-desc">Fixed supply. No minting after deployment. Deflationary mechanisms reduce circulating supply over time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="section" style="padding-top:60px">
+  <div class="sec-tag">What we stand for</div>
+  <h2 class="sec-title">Three things we<br>won't compromise on.</h2>
+  <div class="values">
+    <div class="value">
+      <div class="val-num">01</div>
+      <div class="val-title">The code is the contract.</div>
+      <div class="val-desc">We don't ask anyone to trust our word. The smart contract enforces every lock. It doesn't care who we are, what we say, or whether we're even still around. The code runs the same way forever.</div>
+    </div>
+    <div class="value">
+      <div class="val-num">02</div>
+      <div class="val-title">Transparency over marketing.</div>
+      <div class="val-desc">Everything on CoraAiVault is public. Every lock. Every unlock date. Every transaction. We don't have private records or internal databases. If it happened, it's on the blockchain where anyone can see it.</div>
+    </div>
+    <div class="value">
+      <div class="val-num">03</div>
+      <div class="val-title">User funds are untouchable.</div>
+      <div class="val-desc">We built the platform so that even if we wanted to access locked tokens, we couldn't. This isn't a policy. It's how the contract is written. No upgrade function. No emergency withdrawal. No backdoor.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE'RE DIFFERENT -->
+<section class="section">
+  <div class="two-col">
+    <div>
+      <div class="sec-tag">How we're different</div>
+      <h2 class="sec-title">Other lockers lock tokens.<br>We go further.</h2>
+      <p class="prose">The basic version of a token locker isn't hard to build. Hold tokens until a date. CoraAiVault does that too. But we also built everything investors actually want to know before they put money in.</p>
+      <p class="prose"><strong>The scanner</strong> checks a contract before you lock it. Mint functions, blacklists, honeypot patterns — flagged automatically. No other locker does this.</p>
+      <p class="prose"><strong>The explorer</strong> lets any investor search any wallet and see all locks instantly. Investors don't need to ask projects — they can just check.</p>
+      <p class="prose"><strong>Vesting schedules</strong> let projects prove they're releasing tokens in tranches, not all at once. Each tranche is a separate on-chain lock. No spreadsheets. No promises.</p>
+      <p class="prose">The goal isn't to be the biggest locker. It's to be the one serious projects choose because it's the most credible.</p>
+    </div>
+    <div>
+      <div class="sec-tag">Tech stack</div>
+      <h2 class="sec-title" style="font-size:2rem">What it runs on.</h2>
+      <div class="tech-list">
+        <div class="tech-item">
+          <div style="font-size:1.2rem;width:32px;text-align:center">⛓️</div>
+          <div style="flex:1"><div class="tech-name">BNB Smart Chain</div><div class="tech-desc">All locks are on-chain. Permanent. Public. Verifiable.</div></div>
+          <div class="tech-tag">Live</div>
+        </div>
+        <div class="tech-item">
+          <div style="font-size:1.2rem;width:32px;text-align:center">📜</div>
+          <div style="flex:1"><div class="tech-name">Solidity Smart Contracts</div><div class="tech-desc">Written to OpenZeppelin standards. Re-entrancy protected.</div></div>
+          <div class="tech-tag">Deployed</div>
+        </div>
+        <div class="tech-item">
+          <div style="font-size:1.2rem;width:32px;text-align:center">🔐</div>
+          <div style="flex:1"><div class="tech-name">Ethers.js v6</div><div class="tech-desc">Wallet connection, transaction signing, contract interaction.</div></div>
+          <div class="tech-tag">v6.7</div>
+        </div>
+        <div class="tech-item">
+          <div style="font-size:1.2rem;width:32px;text-align:center">🤖</div>
+          <div style="flex:1"><div class="tech-name">Contract Scanner</div><div class="tech-desc">On-chain code analysis with real BSC RPC reads.</div></div>
+          <div class="tech-tag">Beta</div>
+        </div>
+        <div class="tech-item">
+          <div style="font-size:1.2rem;width:32px;text-align:center">🌐</div>
+          <div style="flex:1"><div class="tech-name">Vercel</div><div class="tech-desc">Frontend hosted globally. Auto-deploys from GitHub.</div></div>
+          <div class="tech-tag">Live</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP TIMELINE -->
+<section class="section">
+  <div class="sec-tag">Where we're going</div>
+  <h2 class="sec-title">Five phases.<br>Already on phase two.</h2>
+  <p class="prose">Phase 1 is done. The locker is live. People are using it. Phase 2 is the token launch and growth phase — getting $CORA out, getting verified on CoinGecko, and reaching the first 100 projects locked.</p>
+  <div class="timeline">
+    <div class="tl-item done">
+      <div class="tl-date">Phase 01 · Complete</div>
+      <div class="tl-title">Foundation</div>
+      <div class="tl-desc">Smart contract deployed on BSC Mainnet. Token locking, liquidity locking, vesting, scanner, explorer, and certificates — all live.</div>
+    </div>
+    <div class="tl-item current">
+      <div class="tl-date">Phase 02 · In Progress</div>
+      <div class="tl-title">Token & Growth</div>
+      <div class="tl-desc">$CORA token deployment. PancakeSwap listing. CoinGecko and CoinMarketCap listings. Smart contract audit. First 100 projects locked milestone.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Phase 03 · Q3 2025</div>
+      <div class="tl-title">Multi-Chain</div>
+      <div class="tl-desc">Ethereum, Base, Polygon, and Arbitrum deployments. $CORA staking. Governance voting. Advanced analytics dashboard.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Phase 04 · Q4 2025</div>
+      <div class="tl-title">Full AI Layer</div>
+      <div class="tl-desc">Real-time contract monitoring. Predictive risk scoring. Wallet behavior analysis. Automated community alerts. Mobile app.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Phase 05 · 2026</div>
+      <div class="tl-title">DeFi Infrastructure</div>
+      <div class="tl-desc">Solana. Institutional vaults. DAO management tools. Full decentralized governance. Tier-1 CEX listing. 100,000 locks milestone.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="sec-tag">Common questions</div>
+  <h2 class="sec-title">Things people ask us.</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>Can you access my locked tokens?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">No. The smart contract is written so that only the original locker can withdraw tokens — and only after the unlock date passes. The contract owner address can collect platform fees. That is the full extent of our access. We cannot move, modify, or access locked tokens under any circumstances.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>What happens if CoraAiVault shuts down?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">Nothing changes for your lock. The smart contract lives on the BNB blockchain permanently. It does not depend on our servers, our website, or our team being active. When your unlock date arrives, you can interact with the contract directly through BSCScan and withdraw your tokens — no frontend required.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>Do tokens release automatically on the unlock date?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">No — and this is how all lockers work. Blockchains are passive. The unlock date is enforced (nobody can withdraw early) but the actual withdrawal requires you to press the withdraw button. Think of it like a timed safe: it won't open before the date, but you still need to open it when the date arrives.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>What does the 0.001 BNB fee cover?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">Platform maintenance, development, and the team. It is a flat fee per lock — not a percentage of the amount you lock. You pay the same fee whether you're locking 100 tokens or 100 million. The fee goes to the contract owner address, which is the CoraAiVault team wallet.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>Is the smart contract audited?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">A professional audit is scheduled for Phase 2. The contract is written to OpenZeppelin standards and follows security best practices including re-entrancy protection and the checks-effects-interactions pattern. The contract code is public on BSCScan for anyone to review.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>Which tokens can I lock?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">Any BEP-20 token on BNB Smart Chain. This includes standard tokens, LP tokens from PancakeSwap, and any token that follows the BEP-20 standard. The contract does not whitelist or blacklist specific tokens — if it's BEP-20, it works.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span>What is $CORA used for?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">$CORA is the platform utility token. It provides fee discounts on locks, governance voting rights, access to premium AI scanning features, staking rewards from platform revenue, and priority listing in the verified project directory. 30% of platform revenue is used to buy back and burn $CORA from the open market.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2 class="cta-title">Ready to prove<br>your <em>commitment?</em></h2>
+  <p class="cta-sub">Lock your tokens or liquidity in two minutes. Permanent on-chain record. Verifiable by anyone.</p>
+  <div class="cta-btns">
+    <a href="app.html" class="btn btn-volt btn-lg">Launch the Locker →</a>
+    <a href="whitepaper.html" class="btn btn-ghost btn-lg">Read the Whitepaper</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      CORA<em>AI</em>
+      <p>Token and liquidity locking on BNB Chain. Every lock is on-chain, transparent, and permanent.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="app.html">Lock Tokens</a>
+      <a href="app.html">Lock Liquidity</a>
+      <a href="app.html">Vesting</a>
+      <a href="app.html">Explorer</a>
+      <a href="app.html">Scanner</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="whitepaper.html">Whitepaper</a>
+      <a href="whitepaper.html">Roadmap</a>
+      <a href="whitepaper.html">Tokenomics</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="https://x.com/CoraAivault" target="_blank">X (Twitter)</a>
+      <a href="https://t.me/coraaivault" target="_blank">Telegram</a>
+      <a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CoraAiVault. All rights reserved.</span>
+    <div class="footer-contract">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</div>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById("mobileMenu").classList.toggle("open")}
+function toggleFaq(el){el.parentElement.classList.toggle("open")}
+</script>
+</body>
+</html>
