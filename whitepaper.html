@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whitepaper v1.0 — CoraAiVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--lav:#7B6FE8;--teal:#00D4AA;--fire:#FF5733;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.prog{position:fixed;top:0;left:0;height:2px;background:var(--volt);z-index:999;transition:width .1s}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.88);position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lmark{width:32px;height:32px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.lmark svg{width:18px;height:18px}
+.lword{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:var(--white)}
+.lword em{color:var(--volt);font-style:normal}
+.nav-links{display:flex;gap:4px}
+.nl{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nl:hover,.nl.active{color:var(--white);background:rgba(255,255,255,.06)}
+.btn{font-family:var(--body);font-weight:700;font-size:.76rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:8px;transition:all .18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase}
+.bv{background:var(--volt);color:var(--ink);padding:8px 18px}.bv:hover{filter:brightness(.92)}
+.bg{background:transparent;color:var(--smoke);border:1px solid var(--line2);padding:8px 18px}.bg:hover{border-color:var(--mist);color:var(--white)}
+.bsm{padding:6px 13px;font-size:.68rem;border-radius:6px}
+.hb{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hb span{width:22px;height:2px;background:var(--white);border-radius:1px}
+.mm{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mm.open{display:flex}
+.ml{font-family:var(--display);font-size:2.2rem;letter-spacing:.06em;color:var(--smoke);text-decoration:none}.ml:hover{color:var(--volt)}
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 40px 100px;gap:44px}
+.sidebar{width:210px;flex-shrink:0;position:sticky;top:80px;height:fit-content;padding:24px 0}
+.slbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.18em;color:var(--smoke);text-transform:uppercase;margin-bottom:9px;padding:0 4px}
+.snav{display:flex;flex-direction:column;gap:1px;margin-bottom:18px}
+.sl{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;color:var(--smoke);font-size:.74rem;font-weight:500;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:all .18s}
+.sl:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.sl.on{color:var(--volt);background:rgba(200,255,0,.06);border-color:rgba(200,255,0,.12);font-weight:700}
+.sdiv{height:1px;background:var(--line);margin:9px 4px}
+.content{flex:1;min-width:0;padding:44px 0}
+.cover{background:var(--ink2);border:1px solid var(--line2);border-radius:16px;padding:44px;margin-bottom:52px;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--volt),var(--teal),var(--volt))}
+.clbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:var(--smoke);text-transform:uppercase;margin-bottom:13px}
+.ctitle{font-family:var(--display);font-size:clamp(2.2rem,5vw,4.2rem);letter-spacing:.02em;line-height:.95;margin-bottom:14px}
+.ctitle span{color:var(--volt)}
+.csub{font-size:.86rem;color:var(--smoke);max-width:480px;line-height:1.75;margin-bottom:26px}
+.cpills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:5px 12px;border-radius:5px}
+.pv{background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.18);color:var(--volt)}
+.pt{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);color:var(--teal)}
+.ps{background:var(--ink3);border:1px solid var(--line);color:var(--smoke)}
+.sec{margin-bottom:56px;scroll-margin-top:86px}
+.snum{font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;color:var(--smoke);text-transform:uppercase;margin-bottom:5px}
+.stitle{font-family:var(--display);font-size:clamp(1.7rem,3.5vw,2.8rem);letter-spacing:.03em;line-height:.95;margin-bottom:7px}
+.stitle span{color:var(--volt)}
+.sbar{width:32px;height:2px;background:var(--volt);border-radius:1px;margin-bottom:22px}
+.prose{font-size:.84rem;color:var(--smoke);line-height:1.85;margin-bottom:13px}
+.prose strong{color:var(--white)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:18px 0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin:18px 0}
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:11px;padding:20px;transition:border-color .2s}.card:hover{border-color:var(--line2)}
+.ci{font-size:1.3rem;margin-bottom:9px}.ct{font-weight:800;font-size:.88rem;margin-bottom:7px}.cd{font-size:.76rem;color:var(--smoke);line-height:1.65}
+.hl{border-radius:9px;padding:16px 20px;margin:14px 0}
+.hv{background:rgba(200,255,0,.05);border:1px solid rgba(200,255,0,.14)}
+.ht{background:rgba(0,212,170,.04);border:1px solid rgba(0,212,170,.13)}
+.hg{background:rgba(255,209,102,.04);border:1px solid rgba(255,209,102,.13)}
+.hl p{font-size:.8rem;line-height:1.8}.hl p strong{color:var(--volt)}.ht p strong{color:var(--teal)}.hg p strong{color:#FFD166}
+.thero{background:var(--ink2);border:1px solid var(--line2);border-radius:14px;padding:32px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
+.thero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--volt),var(--teal))}
+.ticker{font-family:var(--display);font-size:3.5rem;letter-spacing:.06em;color:var(--volt);line-height:1;margin-bottom:4px}
+.ticksub{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:var(--smoke);text-transform:uppercase;margin-bottom:22px}
+.trow{display:flex;justify-content:center;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--ink3)}
+.ts{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--line)}.ts:last-child{border-right:none}
+.tsv{font-family:var(--mono);font-weight:600;font-size:.82rem;color:var(--white)}.tsl{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;color:var(--smoke);text-transform:uppercase;margin-top:2px}
+table.t{width:100%;border-collapse:collapse;margin:16px 0;font-size:.76rem}
+table.t th{background:var(--ink3);font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;color:var(--smoke);text-transform:uppercase;padding:10px 13px;text-align:left;border-bottom:1px solid var(--line2)}
+table.t td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.t tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+.pct{font-family:var(--display);font-size:1rem;color:var(--volt);letter-spacing:.04em}
+.bwrap{width:70px;height:4px;background:var(--line2);border-radius:2px;overflow:hidden;display:inline-block}
+.bfill{height:100%;border-radius:2px}
+.nc{font-weight:700;font-size:.78rem;margin-bottom:2px}.dc{font-size:.68rem;color:var(--smoke)}
+.ac{font-family:var(--mono);font-size:.68rem;color:var(--teal);text-align:right}
+.rm{padding-left:22px;position:relative;margin-top:26px}
+.rm::before{content:'';position:absolute;left:0;top:6px;bottom:0;width:1px;background:linear-gradient(180deg,var(--volt),var(--teal) 40%,var(--lav) 70%,var(--line))}
+.ph{position:relative;margin-bottom:32px}
+.ph::before{content:'';position:absolute;left:-26px;top:7px;width:11px;height:11px;border-radius:50%;border:1px solid var(--line2);background:var(--ink)}
+.ph.done::before{background:var(--volt);border-color:var(--volt);box-shadow:0 0 9px var(--volt)}
+.ph.cur::before{background:var(--teal);border-color:var(--teal);box-shadow:0 0 9px var(--teal);animation:pd 2s infinite}
+@keyframes pd{0%,100%{box-shadow:0 0 5px var(--teal)}50%{box-shadow:0 0 16px var(--teal)}}
+.pt2{display:flex;align-items:center;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+.plbl{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;color:var(--smoke);text-transform:uppercase}
+.pname{font-family:var(--display);font-size:1.05rem;letter-spacing:.04em}
+.pbadge{font-family:var(--mono);font-size:.54rem;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.08em;text-transform:uppercase}
+.bd{background:rgba(200,255,0,.08);color:var(--volt);border:1px solid rgba(200,255,0,.2)}
+.bc{background:rgba(0,212,170,.07);color:var(--teal);border:1px solid rgba(0,212,170,.18)}
+.bs{background:rgba(255,209,102,.06);color:#FFD166;border:1px solid rgba(255,209,102,.15)}
+.bf{background:rgba(123,111,232,.07);color:var(--lav);border:1px solid rgba(123,111,232,.18)}
+.pbody{background:var(--ink2);border:1px solid var(--line);border-radius:11px;padding:18px}
+.pdesc{font-size:.78rem;color:var(--smoke);line-height:1.7;margin-bottom:14px}
+.cl{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ci2{display:flex;align-items:flex-start;gap:6px;font-size:.72rem;color:var(--smoke)}
+.cdot{width:13px;height:13px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:700}
+.d{background:rgba(200,255,0,.1);color:var(--volt);border:1px solid rgba(200,255,0,.22)}
+.c{background:rgba(0,212,170,.09);color:var(--teal);border:1px solid rgba(0,212,170,.2)}
+.p{background:var(--ink3);color:var(--line2);border:1px solid var(--line)}
+table.rt{width:100%;border-collapse:collapse;margin:16px 0}
+table.rt th{background:var(--ink3);font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--smoke);text-transform:uppercase;padding:10px 13px;text-align:left;border-bottom:1px solid var(--line2)}
+table.rt td{padding:13px;font-size:.76rem;border-bottom:1px solid var(--line);vertical-align:top}
+table.rt tr:nth-child(odd) td{background:rgba(255,255,255,.01)}
+.ri{font-size:1.1rem;text-align:center;width:36px}.rn{font-weight:700;font-size:.78rem;margin-bottom:3px}.rd{font-size:.7rem;color:var(--smoke);line-height:1.6}.rp{font-family:var(--mono);font-size:.68rem;color:#FFD166;text-align:right;white-space:nowrap;vertical-align:middle}
+.di{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.dlbl{font-size:.74rem;font-weight:600;width:140px;flex-shrink:0}
+.dbw{flex:1;height:5px;background:var(--line2);border-radius:3px;overflow:hidden}
+.db{height:100%;border-radius:3px}
+.dpct{font-family:var(--mono);font-size:.66rem;color:var(--smoke);width:28px;text-align:right}
+.sl2{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+.si{display:flex;gap:12px;background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:14px;transition:border-color .2s}.si:hover{border-color:var(--line2)}
+.sico{width:32px;height:32px;border-radius:7px;background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.15);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.stl{font-weight:700;font-size:.8rem;margin-bottom:3px;color:var(--teal)}.sde{font-size:.72rem;color:var(--smoke);line-height:1.6}
+.ul2{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+.ui{display:flex;gap:12px;background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:14px;transition:all .2s}.ui:hover{border-color:var(--line2);transform:translateX(3px)}
+.uico{width:34px;height:34px;border-radius:7px;background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.14);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.utl{font-weight:700;font-size:.8rem;margin-bottom:3px}.ude{font-size:.72rem;color:var(--smoke);line-height:1.6}
+footer{border-top:1px solid var(--line);padding:44px 60px 36px;margin-top:60px}
+.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.fw{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em}.fw em{color:var(--volt);font-style:normal}
+.fp{font-size:.76rem;color:var(--smoke);line-height:1.7;max-width:190px;margin-top:10px;font-family:var(--body)}
+.fc h4{font-family:var(--mono);font-size:.56rem;letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:11px}
+.fc a{display:block;font-size:.76rem;color:var(--mist);text-decoration:none;margin-bottom:7px;transition:color .2s}.fc a:hover{color:var(--volt)}
+.fb{display:flex;justify-content:space-between;align-items:center;padding-top:18px;border-top:1px solid var(--line);font-size:.68rem;color:var(--smoke)}
+.fcon{font-family:var(--mono);font-size:.56rem;padding:4px 9px;background:var(--ink3);border:1px solid var(--line);border-radius:5px}
+@media(max-width:860px){nav{padding:0 16px}.nav-links{display:none}.hb{display:flex}.layout{flex-direction:column;padding:0 14px 60px;gap:0}.sidebar{width:100%;position:static;padding:14px 0 6px}.snav{flex-direction:row;flex-wrap:wrap;gap:3px}.sl{font-size:.62rem;padding:5px 9px}.content{padding:16px 0}.cover{padding:24px 18px}.ctitle{font-size:2rem}.g2,.g3{grid-template-columns:1fr}.cl{grid-template-columns:1fr}.trow{flex-wrap:wrap}.ts{min-width:50%}footer{padding:32px 16px 24px}.fg{grid-template-columns:1fr 1fr;gap:20px}.fb{flex-direction:column;gap:9px;text-align:center}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<nav>
+  <a href="index.html" class="logo"><div class="lmark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="lword">CORA<em>AI</em></span></a>
+  <div class="nav-links"><a href="index.html" class="nl">Home</a><a href="app.html" class="nl">Locker</a><a href="whitepaper.html" class="nl active">Whitepaper</a><a href="about.html" class="nl">About</a></div>
+  <div style="display:flex;align-items:center;gap:9px"><span style="font-family:var(--mono);font-size:.58rem;color:var(--smoke);padding:4px 9px;background:var(--ink3);border:1px solid var(--line);border-radius:5px">v1.0 2025</span><a href="app.html" class="btn bv bsm">Launch App</a></div>
+  <div class="hb" onclick="document.getElementById('mm').classList.toggle('open')"><span></span><span></span><span></span></div>
+</nav>
+<div class="mm" id="mm"><a href="index.html" class="ml">Home</a><a href="app.html" class="ml">Locker</a><a href="whitepaper.html" class="ml">Whitepaper</a><a href="about.html" class="ml">About</a></div>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="slbl">Contents</div>
+  <div class="snav">
+    <span class="sl on" onclick="go('cover')">Overview</span>
+    <div class="sdiv"></div>
+    <span class="sl" onclick="go('vision')">Vision</span>
+    <span class="sl" onclick="go('problem')">Problem</span>
+    <span class="sl" onclick="go('solution')">Solution</span>
+    <span class="sl" onclick="go('features')">Features</span>
+    <div class="sdiv"></div>
+    <span class="sl" onclick="go('token')">$CORA Token</span>
+    <span class="sl" onclick="go('alloc')">Allocation</span>
+    <span class="sl" onclick="go('utility')">Utility</span>
+    <span class="sl" onclick="go('defl')">Deflationary</span>
+    <div class="sdiv"></div>
+    <span class="sl" onclick="go('roadmap')">Roadmap</span>
+    <span class="sl" onclick="go('revenue')">Revenue</span>
+    <span class="sl" onclick="go('security')">Security</span>
+    <span class="sl" onclick="go('disc')">Disclaimer</span>
+  </div>
+</aside>
+
+<main class="content">
+
+<div class="cover" id="cover">
+  <div class="clbl">CoraAiVault &middot; Whitepaper &middot; Version 1.0 &middot; 2025</div>
+  <div class="ctitle">AI-Powered<br><span>Token &amp; Liquidity</span><br>Vault</div>
+  <p class="csub">Complete documentation covering the platform, $CORA tokenomics, five-phase roadmap, revenue model, and the long-term plan to become the standard trust layer for Web3.</p>
+  <div class="cpills"><span class="pill pv">Contract Live on BSC</span><span class="pill pt">5B $CORA Supply</span><span class="pill ps">Published May 2025</span></div>
+</div>
+
+<div class="sec" id="vision">
+  <div class="snum">01 &mdash; Vision</div>
+  <div class="stitle">Built to fix<br><span>a broken system.</span></div>
+  <div class="sbar"></div>
+  <p class="prose">Billions of dollars leave crypto investors' wallets every year through rug pulls and exit scams. The cause is always the same: investors commit capital based on promises, not proof. By the time they realise the promises were empty, the funds are gone.</p>
+  <p class="prose">CoraAiVault started with one question: <strong>what if the lock itself was the proof?</strong> Not a screenshot. Not a tweet. An actual smart contract on a public blockchain holding tokens until a specific date, verifiable by any investor in ten seconds from anywhere in the world.</p>
+  <div class="g2">
+    <div class="card"><div class="ci">&#127758;</div><div class="ct">Vision</div><div class="cd">A world where every crypto project can prove its legitimacy instantly. Where trust is enforced by code, not words, and investors verify commitments in seconds rather than hours.</div></div>
+    <div class="card"><div class="ci">&#127919;</div><div class="ct">Mission</div><div class="cd">To become the standard trust verification layer for Web3 &mdash; the way SSL certificates became standard for websites. Every serious project locks on CoraAiVault. Every investor checks before buying.</div></div>
+  </div>
+  <div class="hl ht"><p><strong>Five-year goal:</strong> CoraAiVault operates across 6+ blockchains with AI-powered risk scoring, institutional vault services, and a fully decentralised governance system controlled by $CORA holders.</p></div>
+  <p class="prose"><strong>Cross-chain:</strong> Phase 3 deploys CoraAiVault on Ethereum, Base, Polygon, and Arbitrum. Phase 5 adds Solana. Same contract, same interface, six blockchains.</p>
+  <p class="prose"><strong>AI advantage:</strong> No existing locker scans contracts before you lock. We do. Real-time risk scoring, wallet behaviour analysis, and predictive rug alerts &mdash; features no competitor can quickly build.</p>
+</div>
+
+<div class="sec" id="problem">
+  <div class="snum">02 &mdash; The Problem</div>
+  <div class="stitle">Why investors<br><span>keep losing money.</span></div>
+  <div class="sbar"></div>
+  <p class="prose">Over $3 billion was lost to exit scams in 2023 alone. No advanced technology is required to steal from crypto investors &mdash; a convincing project page and an unlocked wallet is all it takes.</p>
+  <div class="g2">
+    <div class="card"><div class="ci">&#128184;</div><div class="ct">Rug Pulls</div><div class="cd">Teams raise capital, lock nothing, then drain liquidity and disappear. Investors have no way to verify commitments before funds are gone.</div></div>
+    <div class="card"><div class="ci">&#127917;</div><div class="ct">Fake Locks</div><div class="cd">Projects claim to lock via screenshots or reversible mechanisms. Without an immutable on-chain record, there is no way to know what is real.</div></div>
+    <div class="card"><div class="ci">&#128065;</div><div class="ct">Hidden Wallets</div><div class="cd">Teams hold unlocked tokens in wallets investors never see. At launch, those wallets dump on retail. Price collapses. Team disappears.</div></div>
+    <div class="card"><div class="ci">&#128269;</div><div class="ct">No Standard</div><div class="cd">There is no universal way to verify project commitments. Most investors lack the skills to check contracts, wallets, and locks manually.</div></div>
+  </div>
+</div>
+
+<div class="sec" id="solution">
+  <div class="snum">03 &mdash; The Solution</div>
+  <div class="stitle">Proof,<br><span>not promises.</span></div>
+  <div class="sbar"></div>
+  <p class="prose">CoraAiVault replaces promises with immutable on-chain records. Smart contracts hold tokens in a vault nobody &mdash; including us &mdash; can access before the unlock date. Every lock is public, permanent, and verifiable by anyone.</p>
+  <div class="g3">
+    <div class="card"><div class="ci">&#128274;</div><div class="ct">Immutable Locking</div><div class="cd">Once locked, tokens cannot be moved by anyone until the unlock date. No admin override. No backdoor. The code is the contract.</div></div>
+    <div class="card"><div class="ci">&#128269;</div><div class="ct">Full Transparency</div><div class="cd">Every lock is publicly visible on BSCScan. Anyone searches any wallet and sees what is locked, how much, and when it unlocks &mdash; in real time.</div></div>
+    <div class="card"><div class="ci">&#129302;</div><div class="ct">AI Risk Scanner</div><div class="cd">Built-in contract scanner flags dangerous functions before you lock or invest. Mint functions, blacklists, honeypot patterns &mdash; detected automatically.</div></div>
+  </div>
+</div>
+
+<div class="sec" id="features">
+  <div class="snum">04 &mdash; Core Features</div>
+  <div class="stitle">Everything a project<br><span>needs to earn trust.</span></div>
+  <div class="sbar"></div>
+  <div class="ul2">
+    <div class="ui"><div class="uico">&#128274;</div><div><div class="utl">Token Locking</div><div class="ude">Lock any BEP-20 token for any duration. Team tokens, advisor allocations, treasury reserves &mdash; all held in immutable smart contracts with public verification on BSCScan.</div></div></div>
+    <div class="ui"><div class="uico">&#128167;</div><div><div class="utl">Liquidity Locking</div><div class="ude">Lock PancakeSwap LP tokens to prove liquidity cannot be drained. The single most requested verification from serious investors evaluating new projects.</div></div></div>
+    <div class="ui"><div class="uico">&#128197;</div><div><div class="utl">Vesting Engine</div><div class="ude">Multi-tranche vesting with cliff periods and linear release. Each tranche is a separate on-chain lock &mdash; investors see exactly when tokens become available month by month.</div></div></div>
+    <div class="ui"><div class="uico">&#129302;</div><div><div class="utl">Contract Scanner</div><div class="ude">Paste any contract address and get an instant risk breakdown. Hidden mint functions, blacklists, ownership analysis &mdash; flagged before you invest a single token.</div></div></div>
+    <div class="ui"><div class="uico">&#128269;</div><div><div class="utl">Public Explorer</div><div class="ude">Search any wallet. See every lock, every unlock date, every countdown timer. Investors verify project commitments without asking anyone's permission.</div></div></div>
+    <div class="ui"><div class="uico">&#128220;</div><div><div class="utl">Lock Certificates</div><div class="ude">Every lock generates a shareable certificate. Post it on X, Telegram, or your website. A professional, verifiable record of what you locked and until when.</div></div></div>
+  </div>
+</div>
+
+<div class="sec" id="token">
+  <div class="snum">05 &mdash; $CORA Token</div>
+  <div class="stitle">The <span>$CORA</span> token.</div>
+  <div class="sbar"></div>
+  <div class="thero">
+    <div class="ticker">$CORA</div>
+    <div class="ticksub">CoraAiVault &middot; BNB Smart Chain &middot; BEP-20</div>
+    <div class="trow">
+      <div class="ts"><div class="tsv">5,000,000,000</div><div class="tsl">Total Supply</div></div>
+      <div class="ts"><div class="tsv">BEP-20</div><div class="tsl">Standard</div></div>
+      <div class="ts"><div class="tsv">BSC</div><div class="tsl">Blockchain</div></div>
+      <div class="ts"><div class="tsv">18</div><div class="tsl">Decimals</div></div>
+      <div class="ts"><div class="tsv">Fixed</div><div class="tsl">No Inflation</div></div>
+    </div>
+  </div>
+  <p class="prose">$CORA is the native utility token of the CoraAiVault ecosystem. It powers fee discounts, governance, AI access, staking rewards, and platform listings. Total supply is fixed at 5 billion &mdash; no additional minting after deployment.</p>
+</div>
+
+<div class="sec" id="alloc">
+  <div class="snum">06 &mdash; Token Allocation</div>
+  <div class="stitle">Where the<br><span>5 billion go.</span></div>
+  <div class="sbar"></div>
+  <table class="t">
+    <thead><tr><th>Category</th><th>%</th><th>Tokens</th><th>Bar</th><th style="text-align:right">Total</th></tr></thead>
+    <tbody>
+      <tr><td><div class="nc">Ecosystem &amp; Rewards</div><div class="dc">Staking rewards, incentives, airdrops, user acquisition over 4 years</div></td><td class="pct">30%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">1,500,000,000</td><td><div class="bwrap"><div class="bfill" style="width:100%;background:var(--volt)"></div></div></td><td class="ac">30%</td></tr>
+      <tr><td><div class="nc">Liquidity</div><div class="dc">DEX pools on PancakeSwap and future cross-chain DEXs. All locked at launch</div></td><td class="pct">20%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">1,000,000,000</td><td><div class="bwrap"><div class="bfill" style="width:67%;background:var(--teal)"></div></div></td><td class="ac">20%</td></tr>
+      <tr><td><div class="nc">Development</div><div class="dc">Platform, smart contracts, AI infrastructure, technical team. 18-month vesting</div></td><td class="pct">15%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">750,000,000</td><td><div class="bwrap"><div class="bfill" style="width:50%;background:#FFD166"></div></div></td><td class="ac">15%</td></tr>
+      <tr><td><div class="nc">Treasury</div><div class="dc">DAO-controlled reserve for investments, audits, partnerships, emergencies. Multi-sig</div></td><td class="pct">10%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">500,000,000</td><td><div class="bwrap"><div class="bfill" style="width:33%;background:var(--lav)"></div></div></td><td class="ac">10%</td></tr>
+      <tr><td><div class="nc">Marketing</div><div class="dc">Exchange listings, influencer campaigns, community growth, hackathons</div></td><td class="pct">10%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">500,000,000</td><td><div class="bwrap"><div class="bfill" style="width:33%;background:var(--fire)"></div></div></td><td class="ac">10%</td></tr>
+      <tr><td><div class="nc">Team</div><div class="dc">Core team. 6-month cliff, 24-month linear vesting. All locked on CoraAiVault</div></td><td class="pct">10%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">500,000,000</td><td><div class="bwrap"><div class="bfill" style="width:33%;background:var(--lav)"></div></div></td><td class="ac">10%</td></tr>
+      <tr><td><div class="nc">Advisors &amp; Partners</div><div class="dc">Strategic advisors, launchpad partners, exchange relationships. 12-month vesting</div></td><td class="pct">5%</td><td style="font-family:var(--mono);font-size:.7rem;color:var(--teal)">250,000,000</td><td><div class="bwrap"><div class="bfill" style="width:17%;background:var(--teal)"></div></div></td><td class="ac">5%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sec" id="utility">
+  <div class="snum">07 &mdash; Token Utility</div>
+  <div class="stitle">Six reasons<br><span>to hold $CORA.</span></div>
+  <div class="sbar"></div>
+  <div class="ul2">
+    <div class="ui"><div class="uico">&#128179;</div><div><div class="utl">Lock Fee Discounts</div><div class="ude">$CORA holders pay less on every lock. Discounts scale with balance &mdash; up to 50% off for Tier 3 holders.</div></div></div>
+    <div class="ui"><div class="uico">&#128499;</div><div><div class="utl">Governance Voting</div><div class="ude">Every token is a vote. Holders decide fee structures, new chain deployments, treasury proposals, and protocol direction. 1 token = 1 vote.</div></div></div>
+    <div class="ui"><div class="uico">&#129302;</div><div><div class="utl">AI Security Access</div><div class="ude">Premium features &mdash; real-time monitoring, advanced risk reports, wallet behaviour alerts &mdash; are gated behind $CORA staking tiers.</div></div></div>
+    <div class="ui"><div class="uico">&#128142;</div><div><div class="utl">Staking Rewards</div><div class="ude">Stake $CORA to earn a proportional share of platform revenue, distributed weekly. 12+ month stakers earn a 2x reward multiplier.</div></div></div>
+    <div class="ui"><div class="uico">&#127885;</div><div><div class="utl">Featured Listings</div><div class="ude">Projects that hold or burn $CORA receive priority placement in the verified directory &mdash; the most visible trust signal for investor communities.</div></div></div>
+    <div class="ui"><div class="uico">&#128268;</div><div><div class="utl">API Access</div><div class="ude">Developers building on CoraAiVault data must stake $CORA to access the API, creating institutional demand for the token at scale.</div></div></div>
+  </div>
+</div>
+
+<div class="sec" id="defl">
+  <div class="snum">08 &mdash; Deflationary Mechanisms</div>
+  <div class="stitle">Supply goes<br><span>down over time.</span></div>
+  <div class="sbar"></div>
+  <p class="prose">The 5 billion $CORA supply is fixed and cannot increase. Three mechanisms actively reduce circulating supply as the platform grows.</p>
+  <div class="g3">
+    <div class="card"><div class="ci">&#128293;</div><div class="ct">Buyback &amp; Burn</div><div class="cd">30% of all platform BNB revenue buys $CORA from the open market and permanently destroys it. Continuous buy pressure tied directly to usage.</div></div>
+    <div class="card"><div class="ci">&#128168;</div><div class="ct">Fee Burns</div><div class="cd">A portion of every premium subscription paid in $CORA is burned rather than redistributed. Platform growth directly reduces supply.</div></div>
+    <div class="card"><div class="ci">&#128197;</div><div class="ct">Quarterly Burns</div><div class="cd">Each quarter, $CORA holders vote on an additional burn event based on performance metrics. Community-controlled deflationary milestones.</div></div>
+  </div>
+  <div class="hl hv"><p><strong>Projected impact:</strong> Combined mechanisms are expected to reduce circulating supply by 15&ndash;25% within the first two years of full platform operation.</p></div>
+</div>
+
+<div class="sec" id="roadmap">
+  <div class="snum">09 &mdash; Roadmap</div>
+  <div class="stitle">Five phases.<br><span>Phase one done.</span></div>
+  <div class="sbar"></div>
+  <div class="rm">
+    <div class="ph done">
+      <div class="pt2"><span class="plbl">Phase 01</span><span class="pname">Foundation</span><span class="pbadge bd">Done</span></div>
+      <div class="pbody"><div class="pdesc">The locker is built and live on BSC Mainnet. Token locking, liquidity locking, vesting, scanner, explorer, and certificates are all operational.</div>
+      <div class="cl"><div class="ci2"><div class="cdot d">&#10003;</div>Whitepaper v1.0</div><div class="ci2"><div class="cdot d">&#10003;</div>Smart contract BSC</div><div class="ci2"><div class="cdot d">&#10003;</div>Token locking live</div><div class="ci2"><div class="cdot d">&#10003;</div>Liquidity locking live</div><div class="ci2"><div class="cdot d">&#10003;</div>dApp frontend deployed</div><div class="ci2"><div class="cdot d">&#10003;</div>Public explorer</div><div class="ci2"><div class="cdot d">&#10003;</div>Anti-rug scanner</div><div class="ci2"><div class="cdot d">&#10003;</div>Lock certificates</div></div></div>
+    </div>
+    <div class="ph cur">
+      <div class="pt2"><span class="plbl">Phase 02</span><span class="pname">Token &amp; Growth</span><span class="pbadge bc">In Progress</span></div>
+      <div class="pbody"><div class="pdesc">Launch $CORA. PancakeSwap listing. CoinGecko and CMC listings. Smart contract audit. First 100 projects locked.</div>
+      <div class="cl"><div class="ci2"><div class="cdot c">&rarr;</div>$CORA deployment</div><div class="ci2"><div class="cdot c">&rarr;</div>PancakeSwap listing</div><div class="ci2"><div class="cdot p">&#9675;</div>BSCScan verification</div><div class="ci2"><div class="cdot p">&#9675;</div>CoinGecko listing</div><div class="ci2"><div class="cdot p">&#9675;</div>CMC listing</div><div class="ci2"><div class="cdot p">&#9675;</div>Smart contract audit</div><div class="ci2"><div class="cdot p">&#9675;</div>100 projects locked</div><div class="ci2"><div class="cdot p">&#9675;</div>Custom domain</div></div></div>
+    </div>
+    <div class="ph">
+      <div class="pt2"><span class="plbl">Phase 03</span><span class="pname">Multi-Chain</span><span class="pbadge bs">Q3 2025</span></div>
+      <div class="pbody"><div class="pdesc">Ethereum, Base, Polygon, Arbitrum deployments. $CORA staking and governance. Analytics dashboard.</div>
+      <div class="cl"><div class="ci2"><div class="cdot p">&#9675;</div>Ethereum</div><div class="ci2"><div class="cdot p">&#9675;</div>Base chain</div><div class="ci2"><div class="cdot p">&#9675;</div>Polygon</div><div class="ci2"><div class="cdot p">&#9675;</div>Arbitrum</div><div class="ci2"><div class="cdot p">&#9675;</div>$CORA staking</div><div class="ci2"><div class="cdot p">&#9675;</div>Governance voting</div><div class="ci2"><div class="cdot p">&#9675;</div>Analytics</div><div class="ci2"><div class="cdot p">&#9675;</div>Developer API</div></div></div>
+    </div>
+    <div class="ph">
+      <div class="pt2"><span class="plbl">Phase 04</span><span class="pname">AI Layer</span><span class="pbadge bs">Q4 2025</span></div>
+      <div class="pbody"><div class="pdesc">Full AI security infrastructure. Real-time scanning, behavioural analysis, predictive risk scoring, community alerts, mobile app.</div>
+      <div class="cl"><div class="ci2"><div class="cdot p">&#9675;</div>AI risk engine</div><div class="ci2"><div class="cdot p">&#9675;</div>Scam detection</div><div class="ci2"><div class="cdot p">&#9675;</div>Wallet monitoring</div><div class="ci2"><div class="cdot p">&#9675;</div>Predictive alerts</div><div class="ci2"><div class="cdot p">&#9675;</div>Trust scores</div><div class="ci2"><div class="cdot p">&#9675;</div>DexTools integration</div><div class="ci2"><div class="cdot p">&#9675;</div>AI subscriptions</div><div class="ci2"><div class="cdot p">&#9675;</div>Mobile app</div></div></div>
+    </div>
+    <div class="ph">
+      <div class="pt2"><span class="plbl">Phase 05</span><span class="pname">Full Infrastructure</span><span class="pbadge bf">2026</span></div>
+      <div class="pbody"><div class="pdesc">Solana. Institutional vaults. DAO tools. Full decentralised governance. Tier-1 CEX. 100,000 locks milestone.</div>
+      <div class="cl"><div class="ci2"><div class="cdot p">&#9675;</div>Solana</div><div class="ci2"><div class="cdot p">&#9675;</div>Institutional vaults</div><div class="ci2"><div class="cdot p">&#9675;</div>DAO tools</div><div class="ci2"><div class="cdot p">&#9675;</div>Full governance</div><div class="ci2"><div class="cdot p">&#9675;</div>Tier-1 CEX</div><div class="ci2"><div class="cdot p">&#9675;</div>CoraAi SDK</div><div class="ci2"><div class="cdot p">&#9675;</div>Enterprise deals</div><div class="ci2"><div class="cdot p">&#9675;</div>100k locks</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec" id="revenue">
+  <div class="snum">10 &mdash; Revenue Model</div>
+  <div class="stitle">How the<br><span>platform earns.</span></div>
+  <div class="sbar"></div>
+  <table class="rt">
+    <thead><tr><th width="36"></th><th>Stream</th><th style="text-align:right">Pricing</th></tr></thead>
+    <tbody>
+      <tr><td class="ri">&#128274;</td><td><div class="rn">Vault Creation Fees</div><div class="rd">Flat BNB fee per lock. Revenue scales directly with number of locks.</div></td><td class="rp">0.001 BNB</td></tr>
+      <tr><td class="ri">&#129302;</td><td><div class="rn">AI Subscriptions</div><div class="rd">Monthly recurring from premium scanning, monitoring and risk reports.</div></td><td class="rp">$10&ndash;$50/mo</td></tr>
+      <tr><td class="ri">&#127885;</td><td><div class="rn">Verified Badges</div><div class="rd">Projects pay for highlighted verified status in the public directory.</div></td><td class="rp">$50&ndash;$200</td></tr>
+      <tr><td class="ri">&#128268;</td><td><div class="rn">API Access</div><div class="rd">Developers building on CoraAiVault data must stake $CORA.</div></td><td class="rp">$CORA stake</td></tr>
+      <tr><td class="ri">&#11088;</td><td><div class="rn">Featured Listings</div><div class="rd">Monthly placement for homepage exposure and directory visibility.</div></td><td class="rp">$100&ndash;$500/mo</td></tr>
+      <tr><td class="ri">&#128197;</td><td><div class="rn">Vesting Engine</div><div class="rd">Advanced vesting configurations for serious projects and funds.</div></td><td class="rp">0.005 BNB</td></tr>
+    </tbody>
+  </table>
+  <p class="prose" style="margin-top:18px;margin-bottom:12px"><strong>Revenue distribution</strong></p>
+  <div class="di"><div class="dlbl">&#128293; Buyback &amp; Burn</div><div class="dbw"><div class="db" style="width:30%;background:var(--fire)"></div></div><div class="dpct">30%</div></div>
+  <div class="di"><div class="dlbl">&#128142; Staking Rewards</div><div class="dbw"><div class="db" style="width:40%;background:var(--volt)"></div></div><div class="dpct">40%</div></div>
+  <div class="di"><div class="dlbl">&#9881; Development</div><div class="dbw"><div class="db" style="width:20%;background:var(--lav)"></div></div><div class="dpct">20%</div></div>
+  <div class="di"><div class="dlbl">&#127974; Treasury</div><div class="dbw"><div class="db" style="width:10%;background:#FFD166"></div></div><div class="dpct">10%</div></div>
+</div>
+
+<div class="sec" id="security">
+  <div class="snum">11 &mdash; Security</div>
+  <div class="stitle">Security is the<br><span>whole product.</span></div>
+  <div class="sbar"></div>
+  <div class="sl2">
+    <div class="si"><div class="sico">&#128272;</div><div><div class="stl">Immutable User Funds</div><div class="sde">Once locked, no account &mdash; including the contract owner &mdash; can access tokens before the unlock date. Enforced at the EVM level with no override mechanism.</div></div></div>
+    <div class="si"><div class="sico">&#128273;</div><div><div class="stl">Owner Role Isolation</div><div class="sde">The owner address can collect fees and update the fee amount. Zero ability to interact with user funds under any circumstances.</div></div></div>
+    <div class="si"><div class="sico">&#128737;</div><div><div class="stl">Re-Entrancy Protection</div><div class="sde">All withdrawal functions use checks-effects-interactions, marking locks as withdrawn before executing transfers. Prevents all known re-entrancy attacks.</div></div></div>
+    <div class="si"><div class="sico">&#128203;</div><div><div class="stl">Professional Audit</div><div class="sde">A full audit by Certik, SolidProof, or Hacken is scheduled for Phase 2. The complete report will be published publicly and linked from the platform.</div></div></div>
+    <div class="si"><div class="sico">&#127974;</div><div><div class="stl">Multi-Sig Treasury</div><div class="sde">All platform revenue is held in a multi-signature wallet. Multiple key holders must approve every transaction. No single key can drain funds.</div></div></div>
+    <div class="si"><div class="sico">&#8734;</div><div><div class="stl">Runs Forever</div><div class="sde">CoraAiVault contracts run on BSC permanently. If the team disappeared tomorrow, every lock would still release to its rightful owner on schedule.</div></div></div>
+  </div>
+  <div class="hl ht"><p><strong>Zero-trust design:</strong> CoraAiVault is built so trusting us is unnecessary. Every commitment is enforced by immutable code. The platform's integrity depends on mathematics, not our honesty.</p></div>
+</div>
+
+<div class="sec" id="disc">
+  <div class="snum">12 &mdash; Disclaimer</div>
+  <div class="stitle">Read this<br><span>carefully.</span></div>
+  <div class="sbar"></div>
+  <div class="hl hg"><p style="color:var(--smoke);line-height:1.85;font-size:.79rem">Cryptocurrency investments carry significant risk. CoraAiVault is a security infrastructure platform &mdash; we do not guarantee the performance or legitimacy of projects that use our tools. Always conduct your own research before investing. This whitepaper is for informational purposes only and does not constitute financial or investment advice. The $CORA token is a utility token and should not be considered a security. Smart contract risks exist in all blockchain protocols. Users interact with CoraAiVault at their own risk.</p></div>
+</div>
+
+</main>
+</div>
+
+<footer>
+  <div class="fg">
+    <div><span class="fw">CORA<em>AI</em></span><p class="fp">Token and liquidity locking on BNB Chain. Every lock is on-chain, transparent, and permanent.</p></div>
+    <div class="fc"><h4>Platform</h4><a href="app.html">Lock Tokens</a><a href="app.html">Lock Liquidity</a><a href="app.html">Vesting</a><a href="app.html">Explorer</a><a href="app.html">Scanner</a></div>
+    <div class="fc"><h4>Resources</h4><a href="whitepaper.html">Whitepaper</a><a href="about.html">About</a></div>
+    <div class="fc"><h4>Community</h4><a href="https://x.com/CoraAivault" target="_blank">X (Twitter)</a><a href="https://t.me/coraaivault" target="_blank">Telegram</a><a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan</a></div>
+  </div>
+  <div class="fb"><span>&#169; 2025 CoraAiVault. All rights reserved.</span><span class="fcon">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</span></div>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){var d=document.documentElement;document.getElementById('prog').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%'});
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+var sections=['cover','vision','problem','solution','features','token','alloc','utility','defl','roadmap','revenue','security','disc'];
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){document.querySelectorAll('.sl').forEach(function(l){l.classList.remove('on')});document.querySelectorAll('.sl').forEach(function(l){if(l.getAttribute('onclick')&&l.getAttribute('onclick').indexOf(e.target.id)>-1)l.classList.add('on')})}})},{threshold:0.2,rootMargin:'-80px 0px -60% 0px'});
+sections.forEach(function(id){var el=document.getElementById(id);if(el)obs.observe(el)});
+</script>
+</body>
+</html>
