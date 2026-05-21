@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoraAi — Token & Liquidity Locking on BNB Chain</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--volt2:#A8D900;--lav:#7B6FE8;--lav2:#9D94F0;--teal:#00D4AA;--teal2:#00F5C4;--fire:#FF5733;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;opacity:.02;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.btn{font-family:var(--body);font-weight:700;font-size:.78rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:8px;transition:all .18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+.btn-volt{background:var(--volt);color:var(--ink);padding:9px 20px}.btn-volt:hover{background:var(--volt2);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--smoke);border:1px solid var(--line2);padding:9px 20px}.btn-ghost:hover{border-color:var(--mist);color:var(--white)}
+.btn-lg{padding:14px 32px;font-size:.86rem;border-radius:10px}
+.btn-sm{padding:7px 14px;font-size:.7rem;border-radius:7px}
+.hidden{display:none!important}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.85);position:sticky;top:0;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-mark{width:32px;height:32px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.nav-mark svg{width:18px;height:18px}
+.nav-wordmark{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:var(--white)}
+.nav-wordmark em{color:var(--volt);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nav-link:hover,.nav-link.active{color:var(--white);background:rgba(255,255,255,.06)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:2px;background:var(--white);border-radius:1px}
+.mobile-menu{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.mobile-menu.open{display:flex}
+.mobile-link{font-family:var(--display);font-size:2.5rem;letter-spacing:.06em;color:var(--smoke);text-decoration:none;transition:color .2s}
+.mobile-link:hover{color:var(--volt)}
+
+/* HERO */
+.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;padding:0 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 50%,rgba(123,111,232,.12) 0%,transparent 70%);pointer-events:none}
+.hero-grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(200,255,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none}
+.hero-eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--volt)}
+.hero-title{font-family:var(--display);font-size:clamp(4rem,10vw,9rem);line-height:.95;letter-spacing:.02em;margin-bottom:28px}
+.hero-title .t1{display:block;color:var(--white)}
+.hero-title .t2{display:block;color:var(--volt);-webkit-text-stroke:0px;text-shadow:0 0 40px rgba(200,255,0,.3)}
+.hero-title .t3{display:block;color:transparent;-webkit-text-stroke:1px rgba(200,200,200,.3)}
+.hero-sub{font-size:1.05rem;color:var(--smoke);max-width:480px;line-height:1.75;margin-bottom:40px;font-weight:400}
+.hero-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:64px}
+.hero-stats{display:flex;gap:48px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--volt);padding-left:16px}
+.hstat-num{font-family:var(--display);font-size:2.2rem;letter-spacing:.04em;color:var(--white);line-height:1}
+.hstat-lbl{font-size:.65rem;font-family:var(--mono);color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.hero-visual{position:absolute;right:60px;top:50%;transform:translateY(-50%);width:380px;pointer-events:none}
+
+/* TICKER TAPE */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;overflow:hidden;background:var(--ink2)}
+.ticker-inner{display:flex;gap:0;animation:tick 25s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--smoke);padding:0 40px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ticker-item span{color:var(--volt)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* LOGOS */
+.logos{padding:60px;border-bottom:1px solid var(--line)}
+.logos-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;color:var(--smoke);text-transform:uppercase;text-align:center;margin-bottom:32px}
+.logos-row{display:flex;justify-content:center;align-items:center;gap:48px;flex-wrap:wrap}
+.logo-chip{font-family:var(--display);font-size:1.2rem;letter-spacing:.1em;color:var(--line2);transition:color .2s}
+.logo-chip:hover{color:var(--mist)}
+
+/* HOW IT WORKS */
+.section{padding:100px 60px}
+.section-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-tag::before{content:'';width:20px;height:1px;background:var(--volt)}
+.section-title{font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:.03em;margin-bottom:16px;line-height:.95}
+.section-sub{font-size:.9rem;color:var(--smoke);max-width:460px;line-height:1.75}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;background:var(--line)}
+.step{background:var(--ink2);padding:40px 36px;position:relative;overflow:hidden;transition:background .25s}
+.step:hover{background:var(--ink3)}
+.step-num{font-family:var(--display);font-size:5rem;letter-spacing:.02em;color:var(--line2);line-height:1;margin-bottom:20px;transition:color .25s}
+.step:hover .step-num{color:var(--volt)}
+.step-title{font-weight:800;font-size:1rem;margin-bottom:10px}
+.step-desc{font-size:.8rem;color:var(--smoke);line-height:1.7}
+.step-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--volt);text-transform:uppercase;margin-top:16px}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:60px;background:var(--line)}
+.feature{background:var(--ink2);padding:40px;transition:background .2s;position:relative;overflow:hidden}
+.feature:hover{background:var(--ink3)}
+.feature::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--volt);opacity:0;transition:opacity .2s}
+.feature:hover::after{opacity:1}
+.feat-icon{width:44px;height:44px;border-radius:10px;background:rgba(200,255,0,.1);border:1px solid rgba(200,255,0,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:18px}
+.feat-title{font-weight:800;font-size:.98rem;margin-bottom:10px}
+.feat-desc{font-size:.8rem;color:var(--smoke);line-height:1.7}
+.feat-link{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;color:var(--volt);text-transform:uppercase;text-decoration:none;margin-top:16px;display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.feat-link:hover{gap:10px}
+
+/* WHY US */
+.why-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:52px}
+.why-card{border:1px solid var(--line2);border-radius:12px;padding:28px;transition:border-color .2s}
+.why-card:hover{border-color:var(--volt)}
+.why-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:12px}
+.why-val{font-family:var(--display);font-size:2.5rem;letter-spacing:.03em;color:var(--volt);line-height:1;margin-bottom:8px}
+.why-desc{font-size:.78rem;color:var(--smoke);line-height:1.65}
+
+/* CTA BANNER */
+.cta-banner{margin:0 60px;border:1px solid var(--line2);border-radius:16px;padding:60px;background:var(--ink2);position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:40px}
+.cta-banner::before{content:'';position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(200,255,0,.08),transparent 70%);pointer-events:none}
+.cta-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);letter-spacing:.03em;line-height:.95}
+.cta-title em{color:var(--volt);font-style:normal}
+.cta-sub{font-size:.85rem;color:var(--smoke);margin-top:14px;max-width:380px;line-height:1.7}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--line);padding:56px 60px 40px;margin-top:80px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand p{font-size:.8rem;color:var(--smoke);line-height:1.7;max-width:220px;margin-top:12px}
+.footer-col h4{font-size:.62rem;font-family:var(--mono);letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:14px}
+.footer-col a{display:block;font-size:.8rem;color:var(--mist);text-decoration:none;margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:var(--volt)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--line);font-size:.72rem;color:var(--smoke)}
+.footer-contract{font-family:var(--mono);font-size:.6rem;padding:5px 12px;background:var(--ink3);border:1px solid var(--line);border-radius:6px}
+
+@media(max-width:900px){
+  .nav{padding:0 20px}.nav-links,.nav-cta{display:none}.hamburger{display:flex}
+  .hero{padding:80px 20px 60px;min-height:auto}.hero-visual{display:none}
+  .hero-stats{gap:28px}
+  .logos{padding:40px 20px}
+  .logos-row{gap:28px}
+  .section{padding:64px 20px}
+  .steps{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .cta-banner{margin:0 20px;flex-direction:column;padding:40px}
+  .footer{padding:40px 20px 32px}.footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <span class="nav-wordmark">CORA<em>AI</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">Home</a>
+    <a href="app.html" class="nav-link">Locker</a>
+    <a href="whitepaper.html" class="nav-link">Whitepaper</a>
+    <a href="about.html" class="nav-link">About</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="app.html" class="btn btn-volt btn-sm">Launch App →</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="mobile-link" onclick="toggleMenu()">Home</a>
+  <a href="app.html" class="mobile-link" onclick="toggleMenu()">Locker</a>
+  <a href="whitepaper.html" class="mobile-link" onclick="toggleMenu()">Whitepaper</a>
+  <a href="about.html" class="mobile-link" onclick="toggleMenu()">About</a>
+  <a href="app.html" class="btn btn-volt btn-lg" onclick="toggleMenu()" style="margin-top:20px">Launch App</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-eyebrow">Live on BNB Chain Mainnet</div>
+  <h1 class="hero-title">
+    <span class="t1">Lock.</span>
+    <span class="t2">Prove.</span>
+    <span class="t3">Build.</span>
+  </h1>
+  <p class="hero-sub">The on-chain vault for projects that want investors to trust them — not just take their word for it. Lock tokens and liquidity. Make it permanent.</p>
+  <div class="hero-cta">
+    <a href="app.html" class="btn btn-volt btn-lg">Start Locking →</a>
+    <a href="whitepaper.html" class="btn btn-ghost btn-lg">Read Whitepaper</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-num">$0</div><div class="hstat-lbl">Rugged so far</div></div>
+    <div class="hstat"><div class="hstat-num">0</div><div class="hstat-lbl">Admin keys</div></div>
+    <div class="hstat"><div class="hstat-num">BSC</div><div class="hstat-lbl">Live now</div></div>
+    <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-lbl">Lock duration</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item"><span>✓</span> Token Locking</div>
+    <div class="ticker-item"><span>✓</span> Liquidity Locking</div>
+    <div class="ticker-item"><span>✓</span> Vesting Schedules</div>
+    <div class="ticker-item"><span>✓</span> Anti-Rug Scanner</div>
+    <div class="ticker-item"><span>✓</span> Lock Certificates</div>
+    <div class="ticker-item"><span>✓</span> Public Explorer</div>
+    <div class="ticker-item"><span>✓</span> BSC Mainnet Live</div>
+    <div class="ticker-item"><span>✓</span> No Admin Keys</div>
+    <div class="ticker-item"><span>✓</span> Token Locking</div>
+    <div class="ticker-item"><span>✓</span> Liquidity Locking</div>
+    <div class="ticker-item"><span>✓</span> Vesting Schedules</div>
+    <div class="ticker-item"><span>✓</span> Anti-Rug Scanner</div>
+    <div class="ticker-item"><span>✓</span> Lock Certificates</div>
+    <div class="ticker-item"><span>✓</span> Public Explorer</div>
+    <div class="ticker-item"><span>✓</span> BSC Mainnet Live</div>
+    <div class="ticker-item"><span>✓</span> No Admin Keys</div>
+  </div>
+</div>
+
+<!-- ECOSYSTEM LOGOS -->
+<div class="logos">
+  <div class="logos-label">Built for the BNB Chain ecosystem</div>
+  <div class="logos-row">
+    <span class="logo-chip">PANCAKESWAP</span>
+    <span class="logo-chip">BSCSCAN</span>
+    <span class="logo-chip">COINGECKO</span>
+    <span class="logo-chip">COINMARKETCAP</span>
+    <span class="logo-chip">DEXTOOLS</span>
+    <span class="logo-chip">POOCOIN</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-tag">How it works</div>
+  <h2 class="section-title">Three steps.<br>Permanent proof.</h2>
+  <p class="section-sub">No complicated process. Connect your wallet, choose what to lock, and it's done — recorded on-chain forever.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Connect your wallet</div>
+      <div class="step-desc">Connect MetaMask to BNB Chain. No account needed. No signup. No email. Just your wallet.</div>
+      <div class="step-tag">Takes 10 seconds</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Choose what to lock</div>
+      <div class="step-desc">Paste a token address or LP token address. Set the amount and pick an unlock date. Lock for 30 days or 2 years — your choice.</div>
+      <div class="step-tag">Any BEP-20 token</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">It's locked. Forever.</div>
+      <div class="step-desc">Confirm the transaction. Tokens move into the smart contract and stay there until the unlock date — nobody touches them until then. Not even us.</div>
+      <div class="step-tag">Immutable on-chain</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" style="padding-top:0">
+  <div class="section-tag">What you get</div>
+  <h2 class="section-title">Everything a project<br>needs to earn trust.</h2>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">Token Locking</div>
+      <div class="feat-desc">Lock team tokens, advisor allocations, or treasury reserves. Investors see exactly how much is locked and when it becomes available. No more "trust us" — the contract says it all.</div>
+      <a href="app.html" class="feat-link">Lock tokens →</a>
+    </div>
+    <div class="feature">
+      <div class="feat-icon">💧</div>
+      <div class="feat-title">Liquidity Locking</div>
+      <div class="feat-desc">Lock your PancakeSwap LP tokens. Prove the liquidity pool can't be drained. This is the first thing serious investors check before they buy — and now you can show them proof.</div>
+      <a href="app.html" class="feat-link">Lock liquidity →</a>
+    </div>
+    <div class="feature">
+      <div class="feat-icon">📅</div>
+      <div class="feat-title">Vesting Schedules</div>
+      <div class="feat-desc">Set up monthly unlock tranches with a cliff period. Each tranche is a separate on-chain lock. Investors can track exactly when tokens become available — month by month.</div>
+      <a href="app.html" class="feat-link">Create vesting →</a>
+    </div>
+    <div class="feature">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">Contract Scanner</div>
+      <div class="feat-desc">Paste any contract address and get an instant risk breakdown. Hidden mint functions, blacklists, ownership status — flagged before you invest or lock a single token.</div>
+      <a href="app.html" class="feat-link">Scan a contract →</a>
+    </div>
+    <div class="feature">
+      <div class="feat-icon">🔍</div>
+      <div class="feat-title">Public Explorer</div>
+      <div class="feat-desc">Search any wallet address. See every lock, every unlock date, every countdown timer. Any investor anywhere can verify a project's commitments in seconds — no trust required.</div>
+      <a href="app.html" class="feat-link">Search explorer →</a>
+    </div>
+    <div class="feature">
+      <div class="feat-icon">📜</div>
+      <div class="feat-title">Lock Certificates</div>
+      <div class="feat-desc">Every lock generates a shareable certificate — post it on X, your Telegram, your website. A clean, professional record of exactly what you locked, when, and until when.</div>
+      <a href="app.html" class="feat-link">Get certificate →</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CORAI -->
+<section class="section" style="background:var(--ink2);padding:80px 60px">
+  <div class="section-tag">Why CoraAi</div>
+  <h2 class="section-title">Not the first locker.<br>But the right one.</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-label">Lock fee</div>
+      <div class="why-val">0.001</div>
+      <div class="why-desc">BNB per lock. Flat fee, no percentage of holdings. Lock a million tokens for the same price as one hundred.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-label">Admin control over your funds</div>
+      <div class="why-val">None.</div>
+      <div class="why-desc">The contract owner can collect fees and nothing else. Your locked tokens are untouchable by anyone until you unlock them.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-label">Where your lock lives</div>
+      <div class="why-val">On-chain.</div>
+      <div class="why-desc">Not in a database. Not on our servers. On the BNB blockchain — which means it's public, permanent, and verifiable by anyone.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-label">What happens if we disappear</div>
+      <div class="why-val">Nothing.</div>
+      <div class="why-desc">Your lock still exists. Your unlock date still applies. The contract runs on the blockchain forever, with or without us.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-label">Chains supported</div>
+      <div class="why-val">BSC →</div>
+      <div class="why-desc">Live on BNB Chain today. Ethereum, Base, Polygon, and Arbitrum in Phase 3. Solana planned for Phase 5.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-label">What competitors don't have</div>
+      <div class="why-val">Scanner.</div>
+      <div class="why-desc">Built-in contract risk analysis. No other locker scans the tokens you're locking before you lock them. We do.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div style="padding:80px 60px">
+  <div class="cta-banner">
+    <div>
+      <div class="cta-title">Ready to lock?<br><em>Takes two minutes.</em></div>
+      <div class="cta-sub">Connect your wallet and create your first lock. 0.001 BNB. No account needed. Permanent on-chain record.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;flex-shrink:0">
+      <a href="app.html" class="btn btn-volt btn-lg" style="justify-content:center">Start Locking →</a>
+      <a href="whitepaper.html" class="btn btn-ghost btn-lg" style="justify-content:center">Read the Docs</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-wordmark">CORA<em style="color:var(--volt)">AI</em></span>
+      <p>Token and liquidity locking on BNB Chain. Every lock is on-chain, transparent, and permanent.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="app.html">Lock Tokens</a>
+      <a href="app.html">Lock Liquidity</a>
+      <a href="app.html">Vesting</a>
+      <a href="app.html">Explorer</a>
+      <a href="app.html">Scanner</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="whitepaper.html">Whitepaper</a>
+      <a href="whitepaper.html#roadmap">Roadmap</a>
+      <a href="whitepaper.html#tokenomics">Tokenomics</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="https://x.com/CoraAivault" target="_blank">X (Twitter)</a>
+      <a href="https://t.me/coraaivault" target="_blank">Telegram</a>
+      <a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CoraAiVault. All rights reserved.</span>
+    <div class="footer-contract">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</div>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById("mobileMenu").classList.toggle("open")}
+</script>
+</body>
+</html>
