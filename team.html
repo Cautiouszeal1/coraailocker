@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team — CoraAiVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--teal:#00D4AA;--lav:#7B6FE8;--fire:#FF5733;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.88);position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lmark{width:32px;height:32px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.lmark svg{width:18px;height:18px}
+.lword{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:var(--white)}
+.lword em{color:var(--volt);font-style:normal}
+.nav-links{display:flex;gap:4px}
+.nl{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nl:hover,.nl.active{color:var(--white);background:rgba(255,255,255,.06)}
+.btn{font-family:var(--body);font-weight:700;font-size:.76rem;letter-spacing:.04em;border:none;cursor:pointer;border-radius:8px;transition:all .18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase}
+.bv{background:var(--volt);color:var(--ink);padding:8px 18px}.bv:hover{filter:brightness(.92)}
+.hb{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hb span{width:22px;height:2px;background:var(--white);border-radius:1px}
+.mm{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mm.open{display:flex}
+.ml{font-family:var(--display);font-size:2.2rem;letter-spacing:.06em;color:var(--smoke);text-decoration:none}.ml:hover{color:var(--volt)}
+
+/* HERO */
+.hero{padding:80px 60px 60px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(123,111,232,.1),transparent 70%);pointer-events:none}
+.eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:16px}
+.hero-title{font-family:var(--display);font-size:clamp(3rem,8vw,6rem);letter-spacing:.02em;line-height:.95;margin-bottom:16px}
+.hero-sub{font-size:.9rem;color:var(--smoke);max-width:480px;margin:0 auto;line-height:1.75}
+.kr-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.15);border-radius:100px;padding:6px 16px;font-family:var(--mono);font-size:.62rem;color:var(--volt);letter-spacing:.1em;margin-top:20px}
+
+/* TEAM */
+.team-section{padding:80px 60px}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto}
+.team-card{background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--volt),var(--teal))}
+.team-card:hover{border-color:var(--line2);transform:translateY(-4px)}
+.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--lav),var(--volt));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:1.8rem;letter-spacing:.04em;color:var(--ink);margin:0 auto 20px;border:2px solid rgba(200,255,0,.2)}
+.member-name{font-family:var(--display);font-size:1.6rem;letter-spacing:.04em;text-align:center;margin-bottom:4px}
+.member-role{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--volt);text-transform:uppercase;text-align:center;margin-bottom:16px}
+.member-country{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.72rem;color:var(--smoke);margin-bottom:18px;font-family:var(--mono)}
+.member-bio{font-size:.8rem;color:var(--smoke);line-height:1.75;margin-bottom:20px}
+.member-social{display:flex;justify-content:center}
+.social-link{display:flex;align-items:center;gap:7px;padding:7px 16px;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:8px;font-size:.72rem;color:var(--mist);text-decoration:none;transition:all .2s;font-family:var(--mono)}
+.social-link:hover{border-color:var(--volt);color:var(--volt)}
+
+/* VALUES */
+.values-section{padding:0 60px 80px}
+.section-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:12px;text-align:center}
+.section-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);letter-spacing:.03em;line-height:.95;margin-bottom:40px;text-align:center}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);max-width:1100px;margin:0 auto}
+.val{background:var(--ink2);padding:32px;transition:background .2s}
+.val:hover{background:var(--ink3)}
+.val-n{font-family:var(--display);font-size:1.8rem;color:var(--volt);margin-bottom:8px}
+.val-t{font-weight:800;font-size:.92rem;margin-bottom:8px}
+.val-d{font-size:.78rem;color:var(--smoke);line-height:1.7}
+
+/* CTA */
+.cta{padding:80px 60px;text-align:center;border-top:1px solid var(--line)}
+.cta-title{font-family:var(--display);font-size:clamp(2rem,5vw,4rem);letter-spacing:.03em;margin-bottom:14px}
+.cta-title em{color:var(--volt);font-style:normal}
+.cta-sub{font-size:.88rem;color:var(--smoke);max-width:400px;margin:0 auto 28px;line-height:1.75}
+.cta-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.bg{background:transparent;color:var(--smoke);border:1px solid var(--line2);padding:10px 22px}.bg:hover{border-color:var(--mist);color:var(--white)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:44px 60px 36px}
+.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.fw{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em}.fw em{color:var(--volt);font-style:normal}
+.fp{font-size:.76rem;color:var(--smoke);line-height:1.7;max-width:190px;margin-top:10px}
+.fc h4{font-family:var(--mono);font-size:.56rem;letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:11px}
+.fc a{display:block;font-size:.76rem;color:var(--mist);text-decoration:none;margin-bottom:7px;transition:color .2s}.fc a:hover{color:var(--volt)}
+.fb{display:flex;justify-content:space-between;align-items:center;padding-top:18px;border-top:1px solid var(--line);font-size:.68rem;color:var(--smoke)}
+.fcon{font-family:var(--mono);font-size:.56rem;padding:4px 9px;background:var(--ink3);border:1px solid var(--line);border-radius:5px}
+
+@media(max-width:860px){nav{padding:0 16px}.nav-links{display:none}.hb{display:flex}.hero,.team-section,.values-section,.cta{padding-left:20px;padding-right:20px}.team-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}footer{padding:32px 16px 24px}.fg{grid-template-columns:1fr 1fr;gap:20px}.fb{flex-direction:column;gap:9px;text-align:center}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo"><div class="lmark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="lword">CORA<em>AI</em></span></a>
+  <div class="nav-links">
+    <a href="index.html" class="nl">Home</a>
+    <a href="app.html" class="nl">Locker</a>
+    <a href="whitepaper.html" class="nl">Whitepaper</a>
+    <a href="about.html" class="nl">About</a>
+    <a href="team.html" class="nl active">Team</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:9px"><a href="app.html" class="btn bv" style="font-size:.7rem;padding:7px 16px">Launch App</a></div>
+  <div class="hb" onclick="document.getElementById('mm').classList.toggle('open')"><span></span><span></span><span></span></div>
+</nav>
+<div class="mm" id="mm">
+  <a href="index.html" class="ml">Home</a><a href="app.html" class="ml">Locker</a>
+  <a href="whitepaper.html" class="ml">Whitepaper</a><a href="about.html" class="ml">About</a>
+  <a href="team.html" class="ml">Team</a>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">The People Behind CoraAiVault</div>
+  <h1 class="hero-title">Meet the Team</h1>
+  <p class="hero-sub">A focused team of blockchain engineers and business strategists building the trust layer Web3 needs.</p>
+  <div class="kr-badge">🇰🇷 Based in South Korea</div>
+</div>
+
+<section class="team-section">
+  <div class="team-grid">
+
+    <!-- Kim Min-jae -->
+    <div class="team-card">
+      <div class="avatar">KM</div>
+      <div class="member-name">Kim Min-jae</div>
+      <div class="member-role">Co-Founder & Chief Executive Officer</div>
+      <div class="member-country">🇰🇷 Seoul, South Korea</div>
+      <p class="member-bio">Kim Min-jae has over 8 years of experience in blockchain strategy, fintech, and startup development. He has led multiple Web3 initiatives focused on infrastructure, digital assets, and ecosystem growth. At CoraAiVault, he oversees the company's vision, strategic partnerships, and global expansion.</p>
+      <div class="member-social">
+        <a href="https://x.com/KimMinjaeCora" target="_blank" class="social-link">𝕏 @KimMinjaeCora</a>
+      </div>
+    </div>
+
+    <!-- Lee Hyun-woo -->
+    <div class="team-card">
+      <div class="avatar" style="background:linear-gradient(135deg,var(--teal),var(--lav))">LH</div>
+      <div class="member-name">Lee Hyun-woo</div>
+      <div class="member-role">Chief Technology Officer</div>
+      <div class="member-country">🇰🇷 Seoul, South Korea</div>
+      <p class="member-bio">Lee Hyun-woo is a blockchain engineer specialising in smart contract architecture, decentralised applications, and Web3 security. With extensive experience building scalable blockchain solutions, he leads the development of CoraAiVault's token locking, liquidity locking, and on-chain verification infrastructure.</p>
+      <div class="member-social">
+        <a href="https://x.com/LeeHyunwooCora" target="_blank" class="social-link">𝕏 @LeeHyunwooCora</a>
+      </div>
+    </div>
+
+    <!-- Park Ji-hoon -->
+    <div class="team-card">
+      <div class="avatar" style="background:linear-gradient(135deg,var(--volt),var(--teal));color:var(--ink)">PJ</div>
+      <div class="member-name">Park Ji-hoon</div>
+      <div class="member-role">Head of Business Development</div>
+      <div class="member-country">🇰🇷 Seoul, South Korea</div>
+      <p class="member-bio">Park Ji-hoon brings years of experience in blockchain partnerships, investor relations, and ecosystem development. He focuses on expanding CoraAiVault's global network by working closely with launchpads, exchanges, blockchain ecosystems, and strategic partners to drive long-term adoption.</p>
+      <div class="member-social">
+        <a href="https://x.com/ParkJihoonCora" target="_blank" class="social-link">𝕏 @ParkJihoonCora</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="values-section">
+  <div class="section-tag">What drives us</div>
+  <h2 class="section-title">Our commitments</h2>
+  <div class="values-grid">
+    <div class="val"><div class="val-n">01</div><div class="val-t">Code over promises.</div><div class="val-d">We built CoraAiVault so that trusting us is unnecessary. Every commitment is enforced by smart contracts on the blockchain — not by our word.</div></div>
+    <div class="val"><div class="val-n">02</div><div class="val-t">Transparency first.</div><div class="val-d">Every lock, every transaction, every unlock is publicly visible on BSCScan. We operate openly because we have nothing to hide and everything to prove.</div></div>
+    <div class="val"><div class="val-n">03</div><div class="val-t">Built for the long term.</div><div class="val-d">We are not building for a single market cycle. CoraAiVault is infrastructure — designed to operate across blockchains for years, not months.</div></div>
+  </div>
+</section>
+
+<div class="cta">
+  <div class="cta-title">Want to work<br>with <em>our team?</em></div>
+  <p class="cta-sub">Partnerships, exchange listings, launchpad integrations, and press inquiries — reach us on Telegram or X.</p>
+  <div class="cta-btns">
+    <a href="https://t.me/coraaivault" target="_blank" class="btn bv" style="padding:12px 24px">✈ Telegram</a>
+    <a href="https://x.com/CoraAivault" target="_blank" class="btn bg" style="padding:12px 24px">𝕏 Twitter</a>
+  </div>
+</div>
+
+<footer>
+  <div class="fg">
+    <div><span class="fw">CORA<em>AI</em></span><p class="fp">Token and liquidity locking on BNB Chain. Every lock is on-chain, transparent, and permanent.</p></div>
+    <div class="fc"><h4>Platform</h4><a href="app.html">Lock Tokens</a><a href="app.html">Lock Liquidity</a><a href="app.html">Vesting</a><a href="app.html">Explorer</a></div>
+    <div class="fc"><h4>Company</h4><a href="whitepaper.html">Whitepaper</a><a href="about.html">About</a><a href="team.html">Team</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></div>
+    <div class="fc"><h4>Community</h4><a href="https://x.com/CoraAivault" target="_blank">X (Twitter)</a><a href="https://t.me/coraaivault" target="_blank">Telegram</a><a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan</a></div>
+  </div>
+  <div class="fb"><span>© 2025 CoraAiVault. All rights reserved.</span><span class="fcon">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</span></div>
+</footer>
+<script>function toggleMenu(){document.getElementById('mm').classList.toggle('open')}</script>
+</body>
+</html>
