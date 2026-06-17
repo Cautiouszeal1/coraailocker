@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions — CoraAiVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0B0A12;--ink2:#13111F;--ink3:#1C1929;--line:#241F3A;--line2:#332D52;--smoke:#8B85A8;--mist:#C4BFDA;--white:#F2F0FA;--volt:#C8FF00;--teal:#00D4AA;--lav:#7B6FE8;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Manrope',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;border-bottom:1px solid var(--line);backdrop-filter:blur(16px);background:rgba(11,10,18,.88);position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lmark{width:32px;height:32px;background:var(--volt);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.lmark svg{width:18px;height:18px}
+.lword{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:var(--white)}
+.lword em{color:var(--volt);font-style:normal}
+.nl{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--smoke);text-decoration:none;transition:all .2s}
+.nl:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.hb{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hb span{width:22px;height:2px;background:var(--white);border-radius:1px}
+.mm{display:none;position:fixed;inset:0;background:var(--ink2);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.mm.open{display:flex}
+.ml{font-family:var(--display);font-size:2.2rem;color:var(--smoke);text-decoration:none}.ml:hover{color:var(--volt)}
+
+.layout{display:flex;max-width:1100px;margin:0 auto;padding:0 40px 100px;gap:48px}
+.sidebar{width:200px;flex-shrink:0;position:sticky;top:80px;height:fit-content;padding:28px 0}
+.slbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.18em;color:var(--smoke);text-transform:uppercase;margin-bottom:9px}
+.snav{display:flex;flex-direction:column;gap:1px}
+.sl{padding:8px 10px;border-radius:7px;color:var(--smoke);font-size:.74rem;cursor:pointer;border:1px solid transparent;transition:all .18s;text-decoration:none;display:block}
+.sl:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.sdiv{height:1px;background:var(--line);margin:9px 4px}
+
+.content{flex:1;min-width:0;padding:48px 0}
+.page-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--volt);text-transform:uppercase;margin-bottom:10px}
+.page-title{font-family:var(--display);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:.02em;line-height:.95;margin-bottom:14px}
+.page-date{font-family:var(--mono);font-size:.62rem;color:var(--smoke);margin-bottom:36px}
+
+.sec{margin-bottom:44px;scroll-margin-top:88px}
+.sec-title{font-weight:800;font-size:1rem;margin-bottom:12px;color:var(--white);display:flex;align-items:center;gap:10px}
+.sec-num{font-family:var(--mono);font-size:.65rem;color:var(--volt);background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.15);padding:2px 8px;border-radius:4px}
+.prose{font-size:.83rem;color:var(--smoke);line-height:1.85;margin-bottom:12px}
+.prose strong{color:var(--white)}
+.prose a{color:var(--volt);text-decoration:none}
+.prose a:hover{text-decoration:underline}
+.hl{background:rgba(200,255,0,.04);border:1px solid rgba(200,255,0,.12);border-radius:9px;padding:16px 20px;margin:14px 0}
+.hl p{font-size:.8rem;color:var(--mist);line-height:1.8}
+.warn{background:rgba(255,87,51,.04);border:1px solid rgba(255,87,51,.14);border-radius:9px;padding:16px 20px;margin:14px 0}
+.warn p{font-size:.8rem;color:#FCA5A5;line-height:1.8}
+
+footer{border-top:1px solid var(--line);padding:44px 60px 36px}
+.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.fw{font-family:var(--display);font-size:1.3rem;letter-spacing:.06em}.fw em{color:var(--volt);font-style:normal}
+.fp{font-size:.76rem;color:var(--smoke);line-height:1.7;max-width:190px;margin-top:10px}
+.fc h4{font-family:var(--mono);font-size:.56rem;letter-spacing:.15em;color:var(--smoke);text-transform:uppercase;margin-bottom:11px}
+.fc a{display:block;font-size:.76rem;color:var(--mist);text-decoration:none;margin-bottom:7px;transition:color .2s}.fc a:hover{color:var(--volt)}
+.fb{display:flex;justify-content:space-between;align-items:center;padding-top:18px;border-top:1px solid var(--line);font-size:.68rem;color:var(--smoke)}
+.fcon{font-family:var(--mono);font-size:.56rem;padding:4px 9px;background:var(--ink3);border:1px solid var(--line);border-radius:5px}
+
+@media(max-width:860px){nav{padding:0 16px}.nl{display:none}.hb{display:flex}.layout{flex-direction:column;padding:0 16px 60px;gap:0}.sidebar{width:100%;position:static;padding:14px 0 6px}.snav{flex-direction:row;flex-wrap:wrap;gap:3px}.sl{font-size:.62rem;padding:5px 9px}.content{padding:16px 0}footer{padding:32px 16px 24px}.fg{grid-template-columns:1fr 1fr;gap:20px}.fb{flex-direction:column;gap:9px;text-align:center}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo"><div class="lmark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A12" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="lword">CORA<em>AI</em></span></a>
+  <div style="display:flex;gap:4px"><a href="index.html" class="nl">Home</a><a href="app.html" class="nl">Locker</a><a href="whitepaper.html" class="nl">Whitepaper</a><a href="about.html" class="nl">About</a><a href="team.html" class="nl">Team</a></div>
+  <div class="hb" onclick="document.getElementById('mm').classList.toggle('open')"><span></span><span></span><span></span></div>
+</nav>
+<div class="mm" id="mm"><a href="index.html" class="ml">Home</a><a href="app.html" class="ml">Locker</a><a href="whitepaper.html" class="ml">Whitepaper</a><a href="team.html" class="ml">Team</a></div>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="slbl">Sections</div>
+  <div class="snav">
+    <a class="sl" href="#s1">1. Acceptance</a>
+    <a class="sl" href="#s2">2. Services</a>
+    <a class="sl" href="#s3">3. Eligibility</a>
+    <a class="sl" href="#s4">4. Wallet & Security</a>
+    <a class="sl" href="#s5">5. Smart Contracts</a>
+    <a class="sl" href="#s6">6. Fees</a>
+    <a class="sl" href="#s7">7. Prohibited Use</a>
+    <a class="sl" href="#s8">8. Intellectual Property</a>
+    <a class="sl" href="#s9">9. Disclaimers</a>
+    <a class="sl" href="#s10">10. Liability</a>
+    <a class="sl" href="#s11">11. Indemnification</a>
+    <a class="sl" href="#s12">12. Governing Law</a>
+    <a class="sl" href="#s13">13. Changes</a>
+    <a class="sl" href="#s14">14. Contact</a>
+  </div>
+</aside>
+
+<main class="content">
+  <div class="page-tag">Legal</div>
+  <h1 class="page-title">Terms &amp; Conditions</h1>
+  <div class="page-date">Last updated: May 2025 &nbsp;·&nbsp; CoraAiVault &nbsp;·&nbsp; Operated by FutureVisions Technology</div>
+
+  <div class="warn"><p>⚠️ Please read these Terms and Conditions carefully before using CoraAiVault. By accessing or using our platform, you agree to be bound by these terms. If you do not agree, do not use the platform.</p></div>
+
+  <div class="sec" id="s1">
+    <div class="sec-title"><span class="sec-num">01</span>Acceptance of Terms</div>
+    <p class="prose">By accessing, browsing, or using the CoraAiVault platform at coraaivault.xyz (the "Platform"), you confirm that you have read, understood, and agree to be bound by these Terms and Conditions ("Terms"), our Privacy Policy, and all applicable laws and regulations.</p>
+    <p class="prose">These Terms constitute a legally binding agreement between you ("User") and CoraAiVault ("we", "us", "our"). If you are using the Platform on behalf of an organisation, you represent that you have the authority to bind that organisation to these Terms.</p>
+  </div>
+
+  <div class="sec" id="s2">
+    <div class="sec-title"><span class="sec-num">02</span>Description of Services</div>
+    <p class="prose">CoraAiVault provides a decentralised token and liquidity locking platform on BNB Smart Chain. Our services include:</p>
+    <p class="prose"><strong>Token Locking:</strong> The ability to lock BEP-20 tokens in immutable smart contracts for a specified duration.</p>
+    <p class="prose"><strong>Liquidity Locking:</strong> The ability to lock PancakeSwap LP tokens in immutable smart contracts.</p>
+    <p class="prose"><strong>Vesting Schedules:</strong> Creation of multi-tranche token vesting arrangements via separate on-chain locks.</p>
+    <p class="prose"><strong>Contract Scanner:</strong> An automated tool that analyses token contracts for common risk indicators. This is provided for informational purposes only and does not constitute a professional audit or security guarantee.</p>
+    <p class="prose"><strong>Public Lock Explorer:</strong> A publicly accessible tool for viewing locked tokens associated with any wallet address.</p>
+    <p class="prose"><strong>Lock Certificates:</strong> Shareable digital records of completed locks.</p>
+    <div class="hl"><p>All locking operations are executed through smart contracts on the BNB Smart Chain blockchain. Once tokens are locked, they cannot be retrieved until the specified unlock date — by anyone, including CoraAiVault.</p></div>
+  </div>
+
+  <div class="sec" id="s3">
+    <div class="sec-title"><span class="sec-num">03</span>Eligibility</div>
+    <p class="prose">You must be at least 18 years of age to use this Platform. By using the Platform, you represent and warrant that you meet this requirement.</p>
+    <p class="prose">The Platform is not available to users in jurisdictions where the use of cryptocurrency platforms is prohibited by law. It is your responsibility to ensure that your use of the Platform complies with all applicable laws in your jurisdiction.</p>
+    <p class="prose">Citizens and residents of countries subject to comprehensive sanctions by the United Nations, European Union, or Republic of Korea may be restricted from using the Platform.</p>
+  </div>
+
+  <div class="sec" id="s4">
+    <div class="sec-title"><span class="sec-num">04</span>Wallet Connection & Security</div>
+    <p class="prose">To use the locking features of CoraAiVault, you must connect a compatible Web3 wallet (such as MetaMask). You are solely responsible for the security of your wallet, private keys, seed phrase, and any credentials associated with it.</p>
+    <p class="prose"><strong>CoraAiVault does not:</strong></p>
+    <p class="prose">— Store, access, or have custody of your private keys or seed phrases<br>— Have the ability to recover lost wallet access<br>— Be held responsible for losses arising from compromised wallet security<br>— Send unsolicited requests for private keys or seed phrases</p>
+    <div class="warn"><p>⚠️ Never share your private key or seed phrase with anyone, including CoraAiVault team members. We will never ask for this information.</p></div>
+  </div>
+
+  <div class="sec" id="s5">
+    <div class="sec-title"><span class="sec-num">05</span>Smart Contract Risks</div>
+    <p class="prose">CoraAiVault's locking functionality is powered by smart contracts deployed on the BNB Smart Chain. By using the Platform, you acknowledge and accept the following risks:</p>
+    <p class="prose"><strong>Immutability:</strong> Once tokens are locked, the lock cannot be reversed, modified, or cancelled before the unlock date. This is by design and cannot be overridden by CoraAiVault or any third party.</p>
+    <p class="prose"><strong>Smart Contract Risk:</strong> All smart contracts carry inherent risk. While our contracts are written to established security standards, no smart contract can be guaranteed to be entirely free of bugs or vulnerabilities.</p>
+    <p class="prose"><strong>Network Risk:</strong> Transactions on the BNB Smart Chain are subject to network congestion, gas price fluctuations, and blockchain-level risks outside our control.</p>
+    <p class="prose"><strong>Token Risk:</strong> CoraAiVault does not evaluate, endorse, or guarantee the legitimacy, safety, or value of any token locked on the Platform.</p>
+    <div class="hl"><p>The smart contract address is: <strong>0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</strong> on BSC Mainnet. Always verify you are interacting with the correct contract address before proceeding.</p></div>
+  </div>
+
+  <div class="sec" id="s6">
+    <div class="sec-title"><span class="sec-num">06</span>Fees</div>
+    <p class="prose">CoraAiVault charges a flat fee of <strong>0.001 BNB per lock</strong> at the time of writing. Fees are non-refundable once a transaction has been confirmed on the blockchain.</p>
+    <p class="prose">CoraAiVault reserves the right to modify platform fees at any time. Updated fees will be reflected on the Platform prior to any transaction. Users are responsible for verifying the current fee before initiating a lock.</p>
+    <p class="prose">In addition to the platform fee, users are responsible for paying BNB network gas fees required to process transactions on the BNB Smart Chain.</p>
+  </div>
+
+  <div class="sec" id="s7">
+    <div class="sec-title"><span class="sec-num">07</span>Prohibited Use</div>
+    <p class="prose">You agree not to use the Platform to:</p>
+    <p class="prose">— Violate any applicable local, national, or international law or regulation<br>— Engage in money laundering, terrorist financing, or other financial crimes<br>— Attempt to circumvent sanctions or regulatory restrictions<br>— Deceive, manipulate, or defraud other users or investors<br>— Lock tokens for the purpose of creating a false appearance of commitment while retaining control through other means<br>— Attempt to exploit, hack, or disrupt the Platform or its smart contracts<br>— Use automated scripts, bots, or scrapers to access the Platform without prior written authorisation<br>— Impersonate CoraAiVault, its team members, or any other entity</p>
+    <p class="prose">CoraAiVault reserves the right to report suspicious activity to relevant authorities where legally required.</p>
+  </div>
+
+  <div class="sec" id="s8">
+    <div class="sec-title"><span class="sec-num">08</span>Intellectual Property</div>
+    <p class="prose">All content on the CoraAiVault Platform — including but not limited to the website design, interface, logos, text, graphics, and software — is the intellectual property of CoraAiVault and is protected by applicable copyright, trademark, and intellectual property laws.</p>
+    <p class="prose">You are granted a limited, non-exclusive, non-transferable licence to access and use the Platform for its intended purpose. You may not copy, reproduce, modify, distribute, or create derivative works based on any Platform content without prior written permission from CoraAiVault.</p>
+    <p class="prose">The smart contract code deployed on-chain is publicly visible on BSCScan. Viewing this code does not grant any licence or right to reproduce or deploy it.</p>
+  </div>
+
+  <div class="sec" id="s9">
+    <div class="sec-title"><span class="sec-num">09</span>Disclaimers</div>
+    <p class="prose">THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT ANY WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.</p>
+    <p class="prose"><strong>Not Financial Advice:</strong> Nothing on the Platform constitutes financial, investment, legal, or tax advice. You should consult qualified professionals before making any financial decisions.</p>
+    <p class="prose"><strong>No Endorsement:</strong> The availability of a token on the Platform does not constitute an endorsement, recommendation, or guarantee of its legitimacy, safety, or value by CoraAiVault.</p>
+    <p class="prose"><strong>Scanner Limitations:</strong> The contract scanner is an automated tool and does not constitute a professional security audit. Results are indicative only. CoraAiVault makes no warranties regarding the accuracy or completeness of scanner results.</p>
+    <p class="prose"><strong>Uptime:</strong> CoraAiVault does not guarantee uninterrupted or error-free access to the Platform. The Platform may be temporarily unavailable due to maintenance, updates, or circumstances beyond our control.</p>
+    <div class="warn"><p>⚠️ Cryptocurrency investments involve significant risk. You may lose some or all of your funds. Never invest more than you can afford to lose.</p></div>
+  </div>
+
+  <div class="sec" id="s10">
+    <div class="sec-title"><span class="sec-num">10</span>Limitation of Liability</div>
+    <p class="prose">To the maximum extent permitted by applicable law, CoraAiVault, its founders, directors, employees, and partners shall not be liable for any indirect, incidental, consequential, special, or punitive damages arising from or related to your use of the Platform, including but not limited to:</p>
+    <p class="prose">— Loss of tokens, funds, or digital assets<br>— Smart contract bugs, exploits, or failures<br>— Network failures or blockchain-level issues<br>— Losses arising from market volatility<br>— Unauthorised access to your wallet or account<br>— Errors or omissions in scanner results</p>
+    <p class="prose">In jurisdictions that do not allow the exclusion or limitation of liability, our liability is limited to the maximum extent permitted by law.</p>
+  </div>
+
+  <div class="sec" id="s11">
+    <div class="sec-title"><span class="sec-num">11</span>Indemnification</div>
+    <p class="prose">You agree to indemnify, defend, and hold harmless CoraAiVault and its officers, directors, employees, agents, and partners from and against any claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees) arising out of or relating to:</p>
+    <p class="prose">— Your use of the Platform<br>— Your violation of these Terms<br>— Your violation of any applicable law or regulation<br>— Any misrepresentation you make in connection with the Platform</p>
+  </div>
+
+  <div class="sec" id="s12">
+    <div class="sec-title"><span class="sec-num">12</span>Governing Law & Jurisdiction</div>
+    <p class="prose">These Terms shall be governed by and construed in accordance with the laws of the Republic of Korea, without regard to its conflict of law provisions.</p>
+    <p class="prose">Any disputes arising from or relating to these Terms or your use of the Platform shall be subject to the exclusive jurisdiction of the courts located in Seoul, Republic of Korea, unless otherwise required by applicable law in your jurisdiction.</p>
+    <p class="prose">If any provision of these Terms is found to be unenforceable or invalid, that provision will be modified to the minimum extent necessary to make it enforceable, and the remaining provisions shall continue in full force and effect.</p>
+  </div>
+
+  <div class="sec" id="s13">
+    <div class="sec-title"><span class="sec-num">13</span>Changes to These Terms</div>
+    <p class="prose">CoraAiVault reserves the right to update or modify these Terms at any time. Changes will be effective upon posting to the Platform with an updated "Last updated" date.</p>
+    <p class="prose">Your continued use of the Platform following the posting of revised Terms constitutes your acceptance of the changes. We encourage you to review these Terms periodically.</p>
+    <p class="prose">For material changes, we will make reasonable efforts to notify users via our official X (Twitter) account or Telegram channel.</p>
+  </div>
+
+  <div class="sec" id="s14">
+    <div class="sec-title"><span class="sec-num">14</span>Contact Us</div>
+    <p class="prose">If you have questions about these Terms, please contact the CoraAiVault team through the following channels:</p>
+    <p class="prose"><strong>X (Twitter):</strong> <a href="https://x.com/CoraAivault" target="_blank">@CoraAivault</a><br><strong>Telegram:</strong> <a href="https://t.me/coraaivault" target="_blank">t.me/coraaivault</a><br><strong>Website:</strong> <a href="https://coraaivault.xyz">coraaivault.xyz</a></p>
+    <div class="hl"><p>CoraAiVault is operated by a team based in Seoul, Republic of Korea 🇰🇷. We are committed to operating transparently and in compliance with applicable laws.</p></div>
+  </div>
+
+</main>
+</div>
+
+<footer>
+  <div class="fg">
+    <div><span class="fw">CORA<em>AI</em></span><p class="fp">Token and liquidity locking on BNB Chain. Every lock is on-chain, transparent, and permanent.</p></div>
+    <div class="fc"><h4>Platform</h4><a href="app.html">Lock Tokens</a><a href="app.html">Lock Liquidity</a><a href="app.html">Vesting</a><a href="app.html">Explorer</a></div>
+    <div class="fc"><h4>Company</h4><a href="whitepaper.html">Whitepaper</a><a href="about.html">About</a><a href="team.html">Team</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></div>
+    <div class="fc"><h4>Community</h4><a href="https://x.com/CoraAivault" target="_blank">X (Twitter)</a><a href="https://t.me/coraaivault" target="_blank">Telegram</a><a href="https://bscscan.com/address/0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223" target="_blank">BSCScan</a></div>
+  </div>
+  <div class="fb"><span>© 2025 CoraAiVault. All rights reserved.</span><span class="fcon">0x429aAa8a83Ea0e4D10052e4aF4DDE75c8f8d1223</span></div>
+</footer>
+<script>function toggleMenu(){document.getElementById('mm').classList.toggle('open')}</script>
+</body>
+</html>
